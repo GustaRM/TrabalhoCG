@@ -1,8 +1,5 @@
 import * as THREE from  'three';
-import GUI from '../libs/util/dat.gui.module.js'
-import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import KeyboardState from '../libs/util/KeyboardState.js';
+import { GLTFLoader } from '/three/addons/loaders/GLTFLoader.js';
 import {stageSelector} from './stages.js'
 import {initRenderer, 
         initCamera,
@@ -13,7 +10,6 @@ import {initRenderer,
         onWindowResize, 
         createGroundPlaneXZ,
         getMaxSize} from "../libs/util/util.js";
-import { Color } from '../build/three.module.js';
 import {createTank} from './createTank.js'
 
 const loader = new GLTFLoader();
