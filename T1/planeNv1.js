@@ -14,7 +14,7 @@ import {
   getMaxSize,
 } from "../libs/util/util.js";
 import { shoot } from "./tiro.js";
-import { Color } from "../build/three.module.js";
+import { Color, DirectionalLight, Vector3 } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
@@ -27,6 +27,10 @@ let scene,
   isOrbitEnabled = false,
   initialCameraPosition;
 
+let position =  new THREE.Vector3(1.0, 0.5, 0.2);
+let lightColor = "rgb(255, 255, 255)";
+let dirLight = new DirectionalLight(lightColor, 2.0);
+  dirLight.position.copy(position);
 let AmbientLight = new THREE.AmbientLight (AmbientColor);
 scene = new THREE.Scene();
 renderer = initRenderer();
@@ -76,7 +80,6 @@ let assettank2 = {
 };
 
 createPlane(4);
-//lightMap();
 render();
 
 
@@ -306,9 +309,8 @@ function createPlane(nivel) {
   const stageMatrix = stageSelector(nivel);
 
   //adicionar iluminação aqui
+  scene.add(dirLight);
   scene.add(AmbientLight);
-
-
 
 
   //Cria um plano branco do tamanho da matriz
