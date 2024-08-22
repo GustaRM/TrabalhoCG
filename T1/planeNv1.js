@@ -13,7 +13,7 @@ import {
   createGroundPlaneXZ,
   getMaxSize,
 } from "../libs/util/util.js";
-//import { shoot } from "./tiro.js";
+import { shoot } from "./tiro.js";
 import { Color } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
@@ -29,10 +29,8 @@ let scene,
 
 let AmbientLight = new THREE.AmbientLight (AmbientColor);
 scene = new THREE.Scene();
-scene.add(AmbientLight);
 renderer = initRenderer();
 camera = initCamera(new THREE.Vector3(0, -20, 30));
-// light = initDefaultBasicLight(scene);
 initialCameraPosition = camera.position.clone();
 orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
@@ -104,17 +102,22 @@ function render() {
 }
 
 function updateProjectiles() {
-  projectiles.forEach((projectile) => {
-    
+ /* projectiles.forEach((projectile) => {
+    if (projectile.object != null)
+    {
+      projectile.object.position.add(projectile.object.velocity);
+      projectile.bb.copy(projectile.object.position)
+
+    }
     //console.log(projectiles)
-    projectile.object.position.add(projectile.object.velocity);
-    projectile.bb.copy(projectile.object.position)
-  });
+  });*/
 }
 
 function checkProjectileCollisions() {
-  projectiles.forEach((projectile,index) => {
-    if (assetPlayer.bb.intersectsBox(projectile.bb)) {
+  /*projectiles.forEach((projectile,index) => {
+    console.log(projectile)
+    console.log(projectile.children[0])
+    if (assetPlayer.bb.intersectsBox(projectile.children)) {
       assetPlayer.colisoes = assetPlayer.colisoes + 1;
     }
 
@@ -129,7 +132,7 @@ function checkProjectileCollisions() {
       //scene.remove(projectile);
       //delete projectiles[index]
     }
-  });
+  });*/
 }
 
 
@@ -137,9 +140,10 @@ function checkProjectileCollisions() {
 
 function updateAsset(asset) {
   asset.bb.setFromObject(asset.object);
-  projectiles.forEach((projectile) => {
-  projectile.bb.setFromObject(projectile.object);
-  })
+  
+  //projectiles.forEach((projectile) => {
+  //projectile.bb.setFromObject(projectile.object);
+  //})
   
 
 }
@@ -167,11 +171,11 @@ function checkWallCollisions() {
     }
     
     projectiles.forEach((projectile,index) => {
-      if (projectile.bb.intersectsBox(wall.bb)) {
-         // console.log("parede");
+//      if (projectile.bb.intersectsBox(wall.bb)) {
+  //        console.log("parede");
          // scene.remove(projectile.object);
          // delete projectiles[index]
-        }
+  //    }
     });
   });
 }
@@ -195,11 +199,11 @@ function keyboardUpdate() {
   //Movimenta tanque 1\
   if (keyboard.pressed("Q")) {
     //console.log(assetPlayer);
-    /*projectiles.forEach((projectile) => {
-      console.log (projectile)
-      projectile.getWorldDirection(vectorHelper)
-      console.log (vectorHelper)
-    })*/
+    projectiles.forEach((projectile) => {
+      //projectile.children[0].setFromObject(projectile.children[1]);
+      //asset.bb.setFromObject(asset.object)
+      console.log (projectile.children[0].position)
+    })
   }
   
   if (keyboard.pressed("A")) assetPlayer.object.rotateY(rotationSpeed);
@@ -217,17 +221,29 @@ function keyboardUpdate() {
   
   //Atira tanque 1
   if (keyboard.down("space"))
-    shoot(assetPlayer.object, 0.15, scene);
-    //var box = new THREE.Box3();  
+    projectiles.push(shoot(assetPlayer.object, 0.15, scene));
+    //console.log(projectiles)  
+  //var box = new THREE.Box3();  
     //box.setFromObject(projectiles[projectiles.length-1])
     //projectilebbs.push()
   if (keyboard.down("1")) {
-    scene.remove(scene);
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
+    
     createPlane(1);
   }
   if (keyboard.down("2")) {
     scene.remove(scene);
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
     createPlane(4);
+  }
+  if (keyboard.down("3")) {
+    projectiles.forEach((projectile) => {
+      asset.bb.setFromObject(asset.object)
+      console.log(projectile)});
   }
   
   if (isOrbitEnabled) {
@@ -288,6 +304,12 @@ function calcDistancia(asset1, asset2) {
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
   const stageMatrix = stageSelector(nivel);
+
+  //adicionar iluminação aqui
+  scene.add(AmbientLight);
+
+
+
 
   //Cria um plano branco do tamanho da matriz
   const geometry = new THREE.PlaneGeometry(
@@ -423,6 +445,7 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 10) {
         let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -439,59 +462,3 @@ function createPlane(nivel) {
   }
 }
 
-
-
-//import * as THREE from "three";
-
-let assetTiro = {
-  object: null,
-  loaded: false,
-  colisoes: 3,
-  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
-};
-
-function createBBHelper(bb, color, scene) {
-  // Create a bounding box helper
-  let helper = new THREE.Box3Helper(bb, color);
-  scene.add(helper);
-  return helper;
-}
-
-function shoot(tank, speed, scene) {
-  const projectileGeometry = new THREE.SphereGeometry(0.2, 8, 8);
-  const projectileMaterial = new THREE.MeshPhongMaterial({ color: 0xff1493 });
-
-  let projectile = new THREE.Mesh(projectileGeometry, projectileMaterial);
-  let bbSphere3 = new THREE.Box3().setFromObject(projectile);
-  let bbHelper3 = createBBHelper(bbSphere3, "green", scene);
-
-  const projectileDirection = getTankDirection(tank);
-  projectile.position.copy(tank.position);
-  projectile.position.x = projectile.position.x + projectileDirection.x * 1.7;
-  projectile.position.y = projectile.position.y + projectileDirection.y * 1.7;
-  projectile.position.z = 1.1;
-  bbHelper3.position.copy(projectile.position);
-  let bb = new THREE.Box3().setFromObject(projectile);
-  projectile.add(bbHelper3);
-  projectile.bb = bb;
-  //console.log(projectile.bb);
-  projectile.velocity = projectileDirection.multiplyScalar(speed);
-  projectile.colisoes = 0;
-  projectile.castShadow = true;
-
-
-  assetTiro.object = projectile
-  assetTiro.bb = projectile.bb
-
-  scene.add(projectile);
-  projectiles.push(assetTiro);
-}
-/*
-function getTankDirection(tank) {
-  const direction = tank.getWorldDirection(new THREE.Vector3());
-  const xDirection = direction.x;
-  const yDirection = direction.y;
-  direction.set(xDirection, yDirection, 0);
-  return direction;
-}
-*/
