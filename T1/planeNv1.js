@@ -141,7 +141,7 @@ function updateAsset(asset) {
   
   projectiles.forEach((projectile) => {
     //console.log(projectile.bb)
-    projectile.bb.copy( projectile.position);
+    //projectile.bb.setFromObject(projectile.object);
   });
 }
 
@@ -167,12 +167,15 @@ function checkWallCollisions(cubes) {
       infoBox.changeMessage("Collision detected tank2");
     }
     
-    projectiles.forEach((projectile) => {
-      //if (projectile.bb.intersectsBox(wall.bb)) {
-        //console.log("bateu na parede");
-        //  scene.remove(projectile.bb);
-        //  scene.remove(projectile);
-      //}
+    projectiles.forEach((projectile,index) => {
+      if (projectile.bb.intersectsBox(wall.bb)) {
+        console.log(projectile.bb);
+          
+        /* dupla da deleção completa
+          scene.remove(projectile);
+          delete projectiles[index]
+        */
+          }
     });
   });
 }
