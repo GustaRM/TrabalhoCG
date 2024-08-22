@@ -1,5 +1,12 @@
 import * as THREE from "three";
 
+let assetTiro = {
+  object: null,
+  loaded: false,
+  colisoes: 3,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
 function createBBHelper(bb, color, scene) {
   // Create a bounding box helper
   let helper = new THREE.Box3Helper(bb, color);

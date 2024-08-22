@@ -84,38 +84,13 @@ createPlane(4);
 //lightMap();
 render();
 
-function updateProjectiles(projectiles) {
-  projectiles.forEach((projectile) => {
-    projectile.position.add(projectile.velocity.clone());
-    projectile.bb.copy(projectile.position)
-  });
-}
-
-function checkProjectileCollisions() {
-  projectiles.forEach((projectile) => {
-    if (projectile.bb.intersectsBox(assetPlayer.bb)) {
-      assetPlayer.colisoes = +1;
-      console.log("sucesso")
-    }
-
-    if (projectile.bb.intersectsBox(assettank1.bb)) {
-      assettank1.colisoes = -1;
-      console.log("sucesso")
-    }
-    if (projectile.bb.intersectsBox(assettank2.bb)) {
-      assettank2.colisoes = -1;
-      console.log("sucesso")
-      projectile.remove;
-    }
-  });
-}
 
 function render() {
   infoBox.changeMessage("No collision detected");
 
   //checkProjectileCollisions(projectiles,cubeplayer1,cubeplayer2,cubes)
   //função pra fazer o jogo só funcionar depois dos tanques serem carregados
-  updateProjectiles(projectiles, 1);
+  //updateProjectiles(projectiles, 1);
   if (
     assetPlayer.object != null &&
     assettank1.object != null &&
@@ -124,13 +99,194 @@ function render() {
     assettank2.object.rotateX(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
-    checkProjectileCollisions();
+    //checkProjectileCollisions();
   }
   keyboardUpdate(); //Movimenta os players
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
 
+function updateProjectiles(projectiles) {
+  projectiles.forEach((projectile) => {
+    console.log(projectile)
+    projectile.position.add(projectile.velocity);
+    projectile.bb.copy(projectile.position)
+  });
+}
+
+function checkProjectileCollisions() {
+  projectiles.forEach((projectile) => {
+    if (assetPlayer.bb.intersectsBox(projectile.bb)) {
+      assetPlayer.colisoes = assetPlayer.colisoes + 1;
+      console.log(assetPlayer.colisoes)
+    }
+
+    if (assettank1.bb.intersectsBox(projectile.bb)) {
+      assettank1.colisoes = assettank1-1;
+      //console.log("sucesso3")
+    }
+    if (assettank2.bb.intersectsBox(projectile.bb)) {
+      assettank2.colisoes = assettank2-1;
+      //console.log(projectile)
+      scene.remove(projectile);wwww
+    }
+  });
+}
+
+
+//Funções de colisão
+
+function updateAsset(asset) {
+  asset.bb.copy(asset.object.position);
+  asset.bb.setFromObject(asset.object);
+  
+  projectiles.forEach((projectile) => {
+    //console.log(projectile.bb)
+    //projectile.bb.copy( projectile.position);
+  });
+}
+
+
+function checkWallCollisions(cubes) {
+  let collisionP1, collisionP2, collisionP3;
+  (cubes || []).forEach((wall) => {
+    collisionP1 = assetPlayer.bb.intersectsBox(wall.bb);
+    collisionP2 = assettank1.bb.intersectsBox(wall.bb);
+    collisionP3 = assettank2.bb.intersectsBox(wall.bb);
+    //console.log(collisionP1 , collisionP2 , collisionP3," ")
+    if (collisionP1) {
+      //console.log(wall);
+      infoBox.changeMessage("Collision detected Player");
+    }
+    if (collisionP2) {
+      //console.log(wall);
+      infoBox.changeMessage("Collision detected tank1");
+    }
+    
+    if (collisionP3) {
+      //console.log(wall.Box3);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    
+    projectiles.forEach((projectile) => {
+      //if (projectile.bb.intersectsBox(wall.bb)) {
+        //console.log("bateu na parede");
+        //  scene.remove(projectile.bb);
+        //  scene.remove(projectile);
+      //}
+    });
+  });
+}
+
+function getTankDirection(tank) {
+  const direction = tank.getWorldDirection(new THREE.Vector3());
+  const xDirection = direction.x;
+  const yDirection = direction.y;
+  
+  direction.set(xDirection, yDirection, 0);
+  return direction;
+}
+
+function keyboardUpdate() {
+  var keyboard = new KeyboardState();
+  
+  //orbit.target = midpoint;
+  //Funções para movimentar e atirar
+  keyboard.update();
+  //let vectorHelper = new THREE.Vector3
+  //Movimenta tanque 1\
+  if (keyboard.pressed("Q")) {
+    //console.log(assetPlayer);
+    /*projectiles.forEach((projectile) => {
+      console.log (projectile)
+      projectile.getWorldDirection(vectorHelper)
+      console.log (vectorHelper)
+    })*/
+  }
+  
+  if (keyboard.pressed("A")) assetPlayer.object.rotateY(rotationSpeed);
+  if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
+  if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
+  if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
+  if (keyboard.pressed("left") && !keyboard.pressed("A"))
+    assetPlayer.object.rotateY(rotationSpeed);
+  if (keyboard.pressed("right") && !keyboard.pressed("D"))
+    assetPlayer.object.rotateY(-rotationSpeed);
+  if (keyboard.pressed("down") && !keyboard.pressed("S"))
+    assetPlayer.object.translateZ(-moveSpeed);
+  if (keyboard.pressed("up") && !keyboard.pressed("W"))
+    assetPlayer.object.translateZ(moveSpeed);
+  
+  //Atira tanque 1
+  if (keyboard.down("space"))
+    projectiles.push(shoot(assetPlayer.object, 0.15, scene));
+    //var box = new THREE.Box3();  
+    //box.setFromObject(projectiles[projectiles.length-1])
+    //projectilebbs.push()
+  if (keyboard.down("1")) {
+    scene.remove(scene);
+    createPlane(1);
+  }
+  if (keyboard.down("2")) {
+    scene.remove(scene);
+    createPlane(4);
+  }
+  
+  if (isOrbitEnabled) {
+    //tentativa de fazer uma navegação com o teclado numpad
+    // if (keyboard.pressed("8")) {camera.position.y= camera.position.y+1.1} ;
+    // if (keyboard.pressed("2")) {camera.position.y= camera.position.y+1.1} ;
+    // if (keyboard.pressed("4")) {camera.position.z= camera.position.z+1.1} ;
+    // if (keyboard.pressed("6")) {camera.position.z= camera.position.z+1.1} ;
+  }
+  //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
+  if (keyboard.down("O")) {
+    isOrbitEnabled = !isOrbitEnabled;
+    orbit.enabled = isOrbitEnabled;
+  }
+  let DistanciaPlayers = calcularDistanciaPlayers(
+    assetPlayer,
+    assettank1.assettank2,
+  );
+  //Mantem a camera olhando sempre para o ponto medio
+  if (!isOrbitEnabled) {
+    //console.log( window.innerWidth);
+    //precisa de alguma forma de relacionar o tamanho da janela e a distancia dos players para fazer todos sempre aparecerem
+    
+    camera.position.set(
+      midpoint.x,
+      midpoint.y - 10,
+      10 + DistanciaPlayers + 15 / 3 + (0.5 / window.innerWidth),
+    );
+    camera.lookAt(midpoint);
+  }
+  
+  //Aproximação e afasta a camera
+}
+
+function calcularDistanciaPlayers() {
+  if (
+    assetPlayer.object != null &&
+    assettank1.object != null &&
+    assettank2.object != null
+  ) {
+    // midpoint.add(cubeplayer1.position).add(cubeplayer2.position).divideScalar(3);
+    midpoint
+    .add(assetPlayer.object.position)
+    .add(assettank1.object.position)
+    .add(assettank2.object.position)
+    .divideScalar(4);
+    const d1 = calcDistancia(assetPlayer, assettank1);
+    const d2 = calcDistancia(assetPlayer, assettank2);
+    const d3 = calcDistancia(assettank1, assettank2);
+    return Math.max(d1, d2, d3);
+  }
+  return 30.4;
+}
+function calcDistancia(asset1, asset2) {
+  return asset1.object.position.distanceTo(asset2.object.position);
+}
+  
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
   const stageMatrix = stageSelector(nivel);
@@ -283,150 +439,4 @@ function createPlane(nivel) {
       }
     }
   }
-}
-
-function calcularDistanciaPlayers() {
-  if (
-    assetPlayer.object != null &&
-    assettank1.object != null &&
-    assettank2.object != null
-  ) {
-    // midpoint.add(cubeplayer1.position).add(cubeplayer2.position).divideScalar(3);
-    midpoint
-      .add(assetPlayer.object.position)
-      .add(assettank1.object.position)
-      .add(assettank2.object.position)
-      .divideScalar(4);
-    const d1 = calcDistancia(assetPlayer, assettank1);
-    const d2 = calcDistancia(assetPlayer, assettank2);
-    const d3 = calcDistancia(assettank1, assettank2);
-    return Math.max(d1, d2, d3);
-  }
-  return 30.4;
-}
-
-function calcDistancia(asset1, asset2) {
-  return asset1.object.position.distanceTo(asset2.object.position);
-}
-
-function keyboardUpdate() {
-  var keyboard = new KeyboardState();
-
-  //orbit.target = midpoint;
-  //Funções para movimentar e atirar
-  keyboard.update();
-
-  //Movimenta tanque 1\
-  if (keyboard.pressed("Q")) {
-    console.log(assetPlayer);
-  }
-
-  if (keyboard.pressed("A")) assetPlayer.object.rotateY(rotationSpeed);
-  if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
-  if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
-  if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
-  if (keyboard.pressed("left") && !keyboard.pressed("A"))
-    assetPlayer.object.rotateY(rotationSpeed);
-  if (keyboard.pressed("right") && !keyboard.pressed("D"))
-    assetPlayer.object.rotateY(-rotationSpeed);
-  if (keyboard.pressed("down") && !keyboard.pressed("S"))
-    assetPlayer.object.translateZ(-moveSpeed);
-  if (keyboard.pressed("up") && !keyboard.pressed("W"))
-    assetPlayer.object.translateZ(moveSpeed);
-
-  //Atira tanque 1
-  if (keyboard.down("space"))
-    projectiles.push(shoot(assetPlayer.object, 0.2, scene));
-
-  if (keyboard.down("1")) {
-    scene.remove(scene);
-    createPlane(1);
-  }
-  if (keyboard.down("2")) {
-    scene.remove(scene);
-    createPlane(4);
-  }
-
-  if (isOrbitEnabled) {
-    //tentativa de fazer uma navegação com o teclado numpad
-    // if (keyboard.pressed("8")) {camera.position.y= camera.position.y+1.1} ;
-    // if (keyboard.pressed("2")) {camera.position.y= camera.position.y+1.1} ;
-    // if (keyboard.pressed("4")) {camera.position.z= camera.position.z+1.1} ;
-    // if (keyboard.pressed("6")) {camera.position.z= camera.position.z+1.1} ;
-  }
-  //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
-  if (keyboard.down("O")) {
-    isOrbitEnabled = !isOrbitEnabled;
-    orbit.enabled = isOrbitEnabled;
-  }
-  let DistanciaPlayers = calcularDistanciaPlayers(
-    assetPlayer,
-    assettank1.assettank2,
-  );
-  //Mantem a camera olhando sempre para o ponto medio
-  if (!isOrbitEnabled) {
-    //console.log( window.innerWidth);
-    //precisa de alguma forma de relacionar o tamanho da janela e a distancia dos players para fazer todos sempre aparecerem
-
-    camera.position.set(
-      midpoint.x,
-      midpoint.y - 10,
-      10 + DistanciaPlayers + 15 / 3 + 0.5 / window.innerWidth,
-    );
-    camera.lookAt(midpoint);
-  }
-
-  //Aproximação e afasta a camera
-}
-
-//Funções de colisão
-
-function updateAsset(asset) {
-  asset.bb.copy(asset.object.position);
-  asset.bb.setFromObject(asset.object);
-  
-  projectiles.forEach((projectile) => {
-    console.log(projectile.bb)
-    projectile.bb.copy( projectile.position);
-  });
-}
-
-function checkWallCollisions(cubes) {
-  let collisionP1, collisionP2, collisionP3;
-  (cubes || []).forEach((wall) => {
-    collisionP1 = assetPlayer.bb.intersectsBox(wall.bb);
-    collisionP2 = assettank1.bb.intersectsBox(wall.bb);
-    collisionP3 = assettank2.bb.intersectsBox(wall.bb);
-    //console.log(collisionP1 , collisionP2 , collisionP3," ")
-    if (collisionP1) {
-      //console.log(wall);
-      infoBox.changeMessage("Collision detected Player");
-    }
-    if (collisionP2) {
-      //console.log(wall);
-      infoBox.changeMessage("Collision detected tank1");
-    }
-
-    if (collisionP3) {
-      //console.log(wall.Box3);
-      infoBox.changeMessage("Collision detected tank2");
-    }
-
-    projectiles.forEach((projectile) => {
-      if (projectile.bb.intersectsBox(wall.bb)) {
-        console.log("bateu na parede");
-      //  scene.remove(projectile.bb);
-      //  scene.remove(projectile);
-      }
-    });
-  });
-}
-
-function getTankDirection(tank) {
-  const direction = tank.getWorldDirection(new THREE.Vector3());
-  const xDirection = direction.x;
-  const yDirection = direction.y;
-
-  direction.set(xDirection, yDirection, 0);
-  return direction;
 }
