@@ -196,14 +196,14 @@ export function buildPoste()
    csgObject = csgObject.subtract(cylinderCSG) 
    
 
-   mesh2 = CSG.toMesh(csgObject, auxMat)
-   mesh2.material = new THREE.MeshLambertMaterial({color: 'grey'})
-   //mesh2.position.set(0, 0, 0)
-   //mesh2.add(spotlight)
-   console.log(mesh2)
-   const spotlight = lightMap(cylinderMesh4.position)
-   mesh2.add(spotlight)
-   return mesh2
+  mesh2 = CSG.toMesh(csgObject, auxMat)
+  mesh2.material = new THREE.MeshLambertMaterial({color: 'grey'})
+  //mesh2.position.set(0, 0, 0)
+  //mesh2.add(spotlight)
+  //console.log(mesh2)
+  const spotlight = lightMap(cylinderMesh4.position)
+  mesh2.add(spotlight)
+  return mesh2
 }
 
 export function buildCanhao()
