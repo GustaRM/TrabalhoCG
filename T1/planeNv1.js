@@ -105,15 +105,15 @@ function render() {
 }
 
 function updateProjectiles() {
- /* projectiles.forEach((projectile) => {
+ projectiles.forEach((projectile) => {
     if (projectile.object != null)
     {
-      projectile.object.position.add(projectile.object.velocity);
-      projectile.bb.copy(projectile.object.position)
+      projectile.children[1].position.add(projectile.object.velocity);
+      //projectile.bb.copy(projectile.object.position)
 
     }
     //console.log(projectiles)
-  });*/
+  });
 }
 
 function checkProjectileCollisions() {

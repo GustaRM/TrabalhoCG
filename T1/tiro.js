@@ -23,7 +23,7 @@ export function shoot (tank,speed,scene){
   projectile.position.x = tank.position.x + projectileDirection.x * 1.7;
   projectile.position.y = tank.position.y + projectileDirection.y * 1.7;
   projectile.position.z = 1.1;
-
+  console.log (bbSphere3)
   //adicionando projetil ao grupo e ao cenario
   bbHelper3.position.add(projectile.position);
   group.add(bbHelper3);
