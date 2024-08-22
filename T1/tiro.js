@@ -35,8 +35,10 @@ export function shoot(tank, speed, scene) {
   projectile.velocity = projectileDirection.multiplyScalar(speed);
   projectile.colisoes = 0;
   projectile.castShadow = true;
+  assetTiro.object = projectile
+  assetTiro.bb = projectile.bb
   scene.add(projectile);
-  return projectile;
+  return assetTiro;
 }
 
 function getTankDirection(tank) {
