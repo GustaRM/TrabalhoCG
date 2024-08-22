@@ -128,7 +128,7 @@ function checkProjectileCollisions() {
     if (assettank2.bb.intersectsBox(projectile.bb)) {
       assettank2.colisoes = assettank2-1;
       //console.log(projectile)
-      scene.remove(projectile);wwww
+      scene.remove(projectile);
     }
   });
 }
@@ -137,12 +137,11 @@ function checkProjectileCollisions() {
 //Funções de colisão
 
 function updateAsset(asset) {
-  asset.bb.copy(asset.object.position);
   asset.bb.setFromObject(asset.object);
   
   projectiles.forEach((projectile) => {
     //console.log(projectile.bb)
-    //projectile.bb.copy( projectile.position);
+    projectile.bb.copy( projectile.position);
   });
 }
 
