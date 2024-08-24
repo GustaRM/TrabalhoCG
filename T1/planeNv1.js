@@ -93,6 +93,7 @@ function render() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
+    assettank1.object.rotateX(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
@@ -190,8 +191,8 @@ function getTankDirection(tank) {
 function keyboardUpdate() {
   var keyboard = new KeyboardState();
   keyboard.update();
-
-  if (keyboard.pressed("A")) assetPlayer.object.rotateY(rotationSpeed);
+  if (keyboard.pressed("Q")) console.log(assetPlayer.object);
+  if (keyboard.pressed("A")) {assetPlayer.object.rotateY(rotationSpeed); assetPlayer.object.children[1].rotateX(-rotationSpeed)};
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
   if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
@@ -465,6 +466,7 @@ function createPlane(nivel) {
       }
 
       if (stageMatrix[i][j] === 11) {
+        var cubeGeometry = new THREE.BoxGeometry(4, 4, 3);
         let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
         cube.castShadow = true;
         cube.position.set(
