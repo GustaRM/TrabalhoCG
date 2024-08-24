@@ -15,17 +15,18 @@ function checkColisionSide(object, wall)
    // Check colision with the wall on Y axis
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido Y do tiro
    {
-      console.log("ColisãoY")
+      //console.log("ColisãoY")
       //projectile.velocity.x = -projectile.velocity.x;
-      //object.velocity.y = -object.velocity.y;
-      BoxAux.max.y = (object.bb.max.y-2*object.velocity.y)
-      BoxAux.min.y = (object.bb.min.y-2*object.velocity.y)
+      BoxAux.copy(object.bb);
+      BoxAux.max.y = (object.bb.max.y-object.velocity.y)
+      BoxAux.min.y = (object.bb.min.y-object.velocity.y)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
       {
          console.log("duplaY")
       }
       else 
       {
+         console.log("simplesY")
          object.velocity.y = -object.velocity.y;
          object.position.y = object.position.y + object.velocity.y;
       }
@@ -38,17 +39,19 @@ function checkColisionSide(object, wall)
    // Check colision with the wall on X axis
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido X do tiro
    {
-      console.log("ColisãoX")
+      //console.log("ColisãoX")
       //projectile.velocity.x = -projectile.velocity.x;
       //object.velocity.y = -object.velocity.y;
-      BoxAux.max.x = (object.bb.max.x-2*object.velocity.x)
-      BoxAux.min.x = (object.bb.min.y-2*object.velocity.x)
+      BoxAux.copy(object.bb);
+      BoxAux.max.x = (object.bb.max.x-object.velocity.x)
+      BoxAux.min.x = (object.bb.min.x-object.velocity.x)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
       {
          console.log("duplaX")
       }
       else 
       {
+         console.log("simplesX")
          object.velocity.x = -object.velocity.x;
          object.position.x = object.position.x + object.velocity.x;
       }
