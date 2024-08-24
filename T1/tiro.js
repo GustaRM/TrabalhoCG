@@ -17,8 +17,8 @@ export function shoot(tank, speed, scene) {
 
   const projectileDirection = getTankDirection(tank);
   projectile.position.copy(tank.position);
-  projectile.position.x = projectile.position.x + projectileDirection.x * 1.7;
-  projectile.position.y = projectile.position.y + projectileDirection.y * 1.7;
+  projectile.position.x = projectile.position.x + projectileDirection.x * 2.4;
+  projectile.position.y = projectile.position.y + projectileDirection.y * 2.4;
   projectile.position.z = 1.1;
   //bbHelper3.position.copy(projectile.position);
   let bb = new THREE.Box3().setFromObject(projectile);
