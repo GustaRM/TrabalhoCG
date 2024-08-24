@@ -22,7 +22,7 @@ import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
 let scene,
   renderer,
   camera,
-  AmbientColor = 0xf0f0f0,
+  AmbientColor = 0xa0a0a0,
   orbit,
   isOrbitEnabled = false,
   initialCameraPosition;
@@ -81,15 +81,12 @@ let assettank2 = {
 
 createPlane(4);
 render();
-
-
 function render() {
   infoBox.changeMessage("No collision detected");
 
   //checkProjectileCollisions(projectiles,cubeplayer1,cubeplayer2,cubes)
   //função pra fazer o jogo só funcionar depois dos tanques serem carregados
-  updateProjectiles();
-  checkProjectileCollisions();
+  updateProjectiles(projectiles, 1);
   if (
     assetPlayer.object != null &&
     assettank1.object != null &&
@@ -97,62 +94,55 @@ function render() {
   ) {
     assettank2.object.rotateX(0.01);
     updateAsset(assetPlayer);
-    checkWallCollisions();
+    checkWallCollisions(cubes, projectiles);
+    checkProjectileCollisions();
   }
   keyboardUpdate(); //Movimenta os players
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
-
-function updateProjectiles() {
- projectiles.forEach((projectile) => {
-    if (projectile.object != null)
-    {
-      projectile.children[1].position.add(projectile.object.velocity);
-      //projectile.bb.copy(projectile.object.position)
-
-    }
-    //console.log(projectiles)
+function updateProjectiles(projectiles) {
+  projectiles.forEach((projectile) => {
+    projectile.position.add(projectile.velocity.clone());
+    projectile.bb.copy(projectile.position)
   });
 }
 
 function checkProjectileCollisions() {
-  /*projectiles.forEach((projectile,index) => {
-    console.log(projectile)
-    console.log(projectile.children[0])
-    if (assetPlayer.bb.intersectsBox(projectile.children)) {
-      assetPlayer.colisoes = assetPlayer.colisoes + 1;
+  projectiles.forEach((projectile) => {
+    //console.log(projectile.bb)
+    if (projectile.bb.intersectsBox(assetPlayer.bb)) {
+      assetPlayer.colisoes = +1;
+      console.log("sucesso")
     }
 
-    if (assettank1.bb.intersectsBox(projectile.bb)) {
-      assettank1.colisoes = assettank1-1;
+    if (projectile.bb.intersectsBox(assettank1.bb)) {
+      assettank1.colisoes = -1;
+      console.log("sucesso")
     }
-    if (assettank2.bb.intersectsBox(projectile.bb)) {
-      assettank2.colisoes = assettank2-1;
-      //console.log(projectile)
-      //console.log("sucesso1")
-      //
-      //scene.remove(projectile);
-      //delete projectiles[index]
+    if (projectile.bb.intersectsBox(assettank2.bb)) {
+      assettank2.colisoes = -1;
+      console.log("sucesso")
+      projectile.remove;
     }
-  });*/
+  });
 }
 
 
 //Funções de colisão
 
 function updateAsset(asset) {
+  asset.bb.copy(asset.object.position);
   asset.bb.setFromObject(asset.object);
   
-  //projectiles.forEach((projectile) => {
-  //projectile.bb.setFromObject(projectile.object);
-  //})
-  
-
+  projectiles.forEach((projectile) => {
+    projectile.bb.setFromObject(projectile)
+    //console.log(projectile.bb);
+  });
 }
 
 
-function checkWallCollisions() {
+function checkWallCollisions(cubes) {
   let collisionP1, collisionP2, collisionP3;
   (cubes || []).forEach((wall) => {
     collisionP1 = assetPlayer.bb.intersectsBox(wall.bb);
@@ -167,18 +157,18 @@ function checkWallCollisions() {
       //console.log(wall);
       infoBox.changeMessage("Collision detected tank1");
     }
-    
+
     if (collisionP3) {
       //console.log(wall.Box3);
       infoBox.changeMessage("Collision detected tank2");
     }
-    
-    projectiles.forEach((projectile,index) => {
-//      if (projectile.bb.intersectsBox(wall.bb)) {
-  //        console.log("parede");
-         // scene.remove(projectile.object);
-         // delete projectiles[index]
-  //    }
+
+    projectiles.forEach((projectile) => {
+      if (projectile.bb.intersectsBox(wall.bb)) {
+      //  console.log("bateu na parede");
+      //  scene.remove(projectile.bb);
+      //  scene.remove(projectile);
+      }
     });
   });
 }
@@ -187,7 +177,7 @@ function getTankDirection(tank) {
   const direction = tank.getWorldDirection(new THREE.Vector3());
   const xDirection = direction.x;
   const yDirection = direction.y;
-  
+
   direction.set(xDirection, yDirection, 0);
   return direction;
 }
