@@ -17,6 +17,7 @@ import { shoot } from "./tiro.js";
 import { Color, DirectionalLight, Vector3 } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
+import { colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
 
 let scene,
@@ -110,7 +111,6 @@ function updateProjectiles(projectiles) {
 
 function checkProjectileCollisions() {
   projectiles.forEach((projectile,index) => {
-    //console.log(projectile.bb)
     if (projectile.bb.intersectsBox(assetPlayer.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index];
@@ -174,9 +174,8 @@ function checkWallCollisions(cubes) {
 
     projectiles.forEach((projectile) => {
       if (projectile.bb.intersectsBox(wall.bb)) {
+        colisao(projectile, wall);
       //  console.log("bateu na parede");
-        scene.remove(projectile.bb);
-        scene.remove(projectile);
       }
     });
   });
