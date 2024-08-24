@@ -109,18 +109,27 @@ function updateProjectiles(projectiles) {
 }
 
 function checkProjectileCollisions() {
-  projectiles.forEach((projectile) => {
+  projectiles.forEach((projectile,index) => {
     //console.log(projectile.bb)
     if (projectile.bb.intersectsBox(assetPlayer.bb)) {
+      projectiles.splice(projectiles.indexOf(projectile), 1);
+      delete projectile[index];
+      scene.remove(projectile.bb);
+      scene.remove(projectile);
       assetPlayer.colisoes = +1;
       console.log("sucesso")
     }
-
-    if (projectile.bb.intersectsBox(assettank1.bb)) {
-      assettank1.colisoes = -1;
-      console.log("sucesso")
+    if (assettank1.bb.intersectsBox(projectile.bb)) {
+      projectiles.splice(projectiles.indexOf(projectile), 1);
+      scene.remove(projectile.bb);
+      scene.remove(projectile);
+      assettank1.colisoes -= 1;
     }
     if (projectile.bb.intersectsBox(assettank2.bb)) {
+      projectiles.splice(projectiles.indexOf(projectile), 1);
+      delete projectile[index]
+      scene.remove(projectile.bb);
+      scene.remove(projectile);
       assettank2.colisoes = -1;
       console.log("sucesso")
       projectile.remove;
@@ -166,8 +175,8 @@ function checkWallCollisions(cubes) {
     projectiles.forEach((projectile) => {
       if (projectile.bb.intersectsBox(wall.bb)) {
       //  console.log("bateu na parede");
-      //  scene.remove(projectile.bb);
-      //  scene.remove(projectile);
+        scene.remove(projectile.bb);
+        scene.remove(projectile);
       }
     });
   });
@@ -195,7 +204,7 @@ function keyboardUpdate() {
     projectiles.forEach((projectile) => {
       //projectile.children[0].setFromObject(projectile.children[1]);
       //asset.bb.setFromObject(asset.object)
-      console.log (projectile.children[0].position)
+      console.log (projectiles)
     })
   }
   

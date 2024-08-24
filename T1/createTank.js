@@ -202,6 +202,7 @@ export function buildPoste()
    //mesh2.add(spotlight)
    //console.log(mesh2)
    const spotlight = lightMap(cylinderMesh4.position)
+   spotlight.castShadow = true;
    mesh2.add(spotlight)
    return mesh2
 }
