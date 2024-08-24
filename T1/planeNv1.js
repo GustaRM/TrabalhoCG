@@ -80,12 +80,12 @@ let assettank2 = {
   bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
 };
 
-createPlane(4);
+createPlane(2);
 render();
+
 function render() {
   infoBox.changeMessage("No collision detected");
 
-  //checkProjectileCollisions(projectiles,cubeplayer1,cubeplayer2,cubes)
   //função pra fazer o jogo só funcionar depois dos tanques serem carregados
   updateProjectiles(projectiles, 1);
   if (
@@ -93,9 +93,6 @@ function render() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
-    //assettank2.object.rotateX(0.02);
-    //assettank2.object.rotateY(0.01);
-    //assettank2.object.rotateZ(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
@@ -160,28 +157,20 @@ function checkWallCollisions(cubes) {
     collisionP1 = assetPlayer.bb.intersectsBox(wall.bb);
     collisionP2 = assettank1.bb.intersectsBox(wall.bb);
     collisionP3 = assettank2.bb.intersectsBox(wall.bb);
-    //console.log(collisionP1 , collisionP2 , collisionP3," ")
     if (collisionP1) {
-      //console.log(wall);
-      //checkColisionSideTank(assetPlayer, wall);
       infoBox.changeMessage("Collision detected Player");
     }
     if (collisionP2) {
-      //checkColisionSideTank(assettank1, wall);
-      //console.log(wall);
       infoBox.changeMessage("Collision detected tank1");
     }
 
     if (collisionP3) {
-      //checkColisionSideTank(assettank2, wall);
-      //console.log(wall.Box3);
       infoBox.changeMessage("Collision detected tank2");
     }
 
     projectiles.forEach((projectile) => {
       if (projectile.bb.intersectsBox(wall.bb)) {
         colisao(projectile, wall);
-      //  console.log("bateu na parede");
       }
     });
   });
@@ -196,23 +185,12 @@ function getTankDirection(tank) {
   return direction;
 }
 
+
+//Funções para movimentar e atirar
 function keyboardUpdate() {
   var keyboard = new KeyboardState();
-  
-  //orbit.target = midpoint;
-  //Funções para movimentar e atirar
   keyboard.update();
-  //let vectorHelper = new THREE.Vector3
-  //Movimenta tanque 1\
-  if (keyboard.pressed("Q")) {
-    //console.log(assetPlayer);
-    projectiles.forEach((projectile) => {
-      //projectile.children[0].setFromObject(projectile.children[1]);
-      //asset.bb.setFromObject(asset.object)
-      console.log (projectiles)
-    })
-  }
-  
+
   if (keyboard.pressed("A")) assetPlayer.object.rotateY(rotationSpeed);
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
@@ -229,10 +207,8 @@ function keyboardUpdate() {
   //Atira tanque 1
   if (keyboard.down("space"))
     projectiles.push(shoot(assetPlayer.object, 0.15, scene));
-    //console.log(projectiles)  
-  //var box = new THREE.Box3();  
-    //box.setFromObject(projectiles[projectiles.length-1])
-    //projectilebbs.push()
+
+  //Altera mapa para nivel 1
   if (keyboard.down("1")) {
     while (scene.children.length > 0) {
       scene.remove(scene.children[0]);
@@ -240,12 +216,14 @@ function keyboardUpdate() {
     
     createPlane(1);
   }
+
+   //Altera mapa para nivel 2
   if (keyboard.down("2")) {
     scene.remove(scene);
     while (scene.children.length > 0) {
       scene.remove(scene.children[0]);
     }
-    createPlane(4);
+    createPlane(2);
   }
   if (keyboard.down("3")) {
     projectiles.forEach((projectile) => {
@@ -253,13 +231,6 @@ function keyboardUpdate() {
       console.log(projectile)});
   }
   
-  if (isOrbitEnabled) {
-    //tentativa de fazer uma navegação com o teclado numpad
-    // if (keyboard.pressed("8")) {camera.position.y= camera.position.y+1.1} ;
-    // if (keyboard.pressed("2")) {camera.position.y= camera.position.y+1.1} ;
-    // if (keyboard.pressed("4")) {camera.position.z= camera.position.z+1.1} ;
-    // if (keyboard.pressed("6")) {camera.position.z= camera.position.z+1.1} ;
-  }
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
   if (keyboard.down("O")) {
     isOrbitEnabled = !isOrbitEnabled;
@@ -269,11 +240,9 @@ function keyboardUpdate() {
     assetPlayer,
     assettank1.assettank2,
   );
+  
   //Mantem a camera olhando sempre para o ponto medio
   if (!isOrbitEnabled) {
-    //console.log( window.innerWidth);
-    //precisa de alguma forma de relacionar o tamanho da janela e a distancia dos players para fazer todos sempre aparecerem
-    
     camera.position.set(
       midpoint.x,
       midpoint.y - 10,
@@ -281,8 +250,6 @@ function keyboardUpdate() {
     );
     camera.lookAt(midpoint);
   }
-  
-  //Aproximação e afasta a camera
 }
 
 function calcularDistanciaPlayers() {
@@ -291,7 +258,7 @@ function calcularDistanciaPlayers() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
-    // midpoint.add(cubeplayer1.position).add(cubeplayer2.position).divideScalar(3);
+
     midpoint
     .add(assetPlayer.object.position)
     .add(assettank1.object.position)
@@ -307,7 +274,8 @@ function calcularDistanciaPlayers() {
 function calcDistancia(asset1, asset2) {
   return asset1.object.position.distanceTo(asset2.object.position);
 }
-  
+
+//Função para iniciar o nível
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
   const stageMatrix = stageSelector(nivel);
@@ -335,6 +303,7 @@ function createPlane(nivel) {
   scene.add(plane);
 
  
+  //========= Adiciona elementos na cena(tanques, paredes, poste) ============
 
   for (var i = 0; i < stageMatrix.length; i++) {
     for (var j = 0; j < stageMatrix[i].length; j++) {
@@ -475,10 +444,8 @@ function createPlane(nivel) {
         );
         cube.rotateZ(THREE.MathUtils.degToRad(180))
         cube.scale.set(1.4,1.4,1.4)
-        //console.log(cube)
-        //cube.spotlight.target(THREE.Vector3(0,0,0))
         scene.add(cube);
-        //aux = aux+1
+
       }
       if (stageMatrix[i][j] === 10) {
         let cubegeometrywallUp = new THREE.BoxGeometry(34,1,1)
@@ -494,8 +461,9 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
+
       }
+
       if (stageMatrix[i][j] === 11) {
         let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
         cube.castShadow = true;
@@ -509,8 +477,8 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
+
       if (stageMatrix[i][j] === 12) {
         let cubegeometrywallUp = new THREE.BoxGeometry(1,21,1)
         let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
@@ -525,8 +493,8 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
+
       if (stageMatrix[i][j] === 13) {
         let cubegeometrywallUp = new THREE.BoxGeometry(1,8,1)
         let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);

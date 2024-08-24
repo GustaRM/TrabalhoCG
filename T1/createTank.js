@@ -80,8 +80,6 @@ export function createTank(tankMaterial) {
   return cube;
 }
 
-//Cria as rodas do tanque
-
 export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
 
   let materialLife = new THREE.MeshPhongMaterial({ color: "red" });
