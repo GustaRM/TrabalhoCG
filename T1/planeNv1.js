@@ -17,7 +17,7 @@ import { shoot } from "./tiro.js";
 import { Color, DirectionalLight, Vector3 } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
-import { colisao } from "./colision.js";
+import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
 
 let scene,
@@ -93,7 +93,9 @@ function render() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
-    //assettank2.object.rotateX(0.01);
+    //assettank2.object.rotateX(0.02);
+    //assettank2.object.rotateY(0.01);
+    //assettank2.object.rotateZ(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
@@ -160,14 +162,17 @@ function checkWallCollisions(cubes) {
     //console.log(collisionP1 , collisionP2 , collisionP3," ")
     if (collisionP1) {
       //console.log(wall);
+      //checkColisionSideTank(assetPlayer, wall);
       infoBox.changeMessage("Collision detected Player");
     }
     if (collisionP2) {
+      //checkColisionSideTank(assettank1, wall);
       //console.log(wall);
       infoBox.changeMessage("Collision detected tank1");
     }
 
     if (collisionP3) {
+      //checkColisionSideTank(assettank2, wall);
       //console.log(wall.Box3);
       infoBox.changeMessage("Collision detected tank2");
     }
@@ -444,7 +449,8 @@ function createPlane(nivel) {
         //aux = aux+1
       }
       if (stageMatrix[i][j] === 10) {
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        let cubegeometrywallUp = new THREE.BoxGeometry(34,1,1)
+        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
         cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
@@ -465,6 +471,22 @@ function createPlane(nivel) {
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
           -1.25,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 12) {
+        let cubegeometrywallUp = new THREE.BoxGeometry(1,22,1)
+        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
+        cube.castShadow = true;
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
         );
         cubes.push({
           object: cube,

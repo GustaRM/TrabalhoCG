@@ -5,10 +5,22 @@ function updateObject(object) {
    object.bb.setFromObject(object)
 }
 
+function getTankDirection(tank) {
+   console.log(tank)
+   const direction = tank.getWorldDirection(new THREE.Vector3());
+   const xDirection = direction.x;
+   const yDirection = direction.y;
+ 
+   direction.set(xDirection, yDirection, 0);
+   return direction;
+ }
+
 function checkColisionSide(object, wall) 
 {
    var BoxAux = new THREE.Box3();
    BoxAux.copy(object.bb);
+   //const aux=getTankDirection(object)
+   console.log(object)
    BoxAux.max.y = (object.bb.max.y+object.velocity.y)
    BoxAux.min.y = (object.bb.min.y+object.velocity.y)
    //console.log(BoxAux)   
@@ -60,11 +72,57 @@ function checkColisionSide(object, wall)
    {
       object.position.y
    }
+}
 
+export function checkColisionSideTank(tank, wall) 
+{
+   const projectileDirection = getTankDirection(tank.object);
+   console.log(projectileDirection)
+   var BoxAux = new THREE.Box3();
+   BoxAux.copy(tank.bb);
+   console.log(BoxAux)
+   console.log(tank)
+   BoxAux.max.y = (tank.bb.max.y+0.2)
+   BoxAux.min.y = (tank.bb.min.y+0.2)
+   if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido Y do tiro
+   {
+      BoxAux.copy(tank.bb);
+      BoxAux.max.y = (tank.bb.max.y-0.2)
+      BoxAux.min.y = (tank.bb.min.y-0.2)
+      if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
+      {
+         console.log("duplaY")
+      }
+      else 
+      {
+         console.log("simplesY")
+         tank.object.position.y = tank.object.position.y + tank.object.direction.y;
+      }
+   }
 
-
-   
-   //console.log(projectile);
+   BoxAux.copy(object.bb);
+   BoxAux.max.x = (object.bb.max.x+0.2)
+   BoxAux.min.x = (object.bb.min.x+0.2)
+   if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido X do tiro
+   {
+      BoxAux.copy(object.bb);
+      BoxAux.max.x = (object.bb.max.x-object.velocity.x)
+      BoxAux.min.x = (object.bb.min.x-object.velocity.x)
+      if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
+      {
+         console.log("duplaX")
+      }
+      else 
+      {
+         console.log("simplesX")
+         object.velocity.x = -object.velocity.x;
+         object.position.x = object.position.x + object.velocity.x;
+      }
+   }
+   else
+   {
+      object.position.y
+   }
 }
 
 export function colisao ( projectile , wall ) {
