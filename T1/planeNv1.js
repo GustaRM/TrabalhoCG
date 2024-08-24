@@ -465,12 +465,13 @@ function createPlane(nivel) {
       }
 
       if (stageMatrix[i][j] === 11) {
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        let cubegeometrywallUp = new THREE.BoxGeometry(2,2,2)
+        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
         cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
-          -1.25,
+          -0.9,
         );
         cubes.push({
           object: cube,
