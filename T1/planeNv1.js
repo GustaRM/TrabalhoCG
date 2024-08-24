@@ -92,7 +92,7 @@ function render() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
-    assettank2.object.rotateX(0.01);
+    //assettank2.object.rotateX(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
@@ -313,7 +313,7 @@ function createPlane(nivel) {
     side: THREE.DoubleSide,
   });
   const materialCube = new THREE.MeshBasicMaterial({
-    color: "grey",
+    color: 0x00af00,
     side: THREE.DoubleSide,
   });
   const plane = new THREE.Mesh(geometry, material);
@@ -381,8 +381,8 @@ function createPlane(nivel) {
         let cube = buildCanhao();
         cube.position.set(
           j + 1 - stageMatrix[i].length / 2,
-          -i -2 + stageMatrix.length / 2,
-          0,
+          -i -3 + stageMatrix.length / 2,
+          0.25,
         );
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
@@ -442,6 +442,21 @@ function createPlane(nivel) {
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
           0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 11) {
+        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.castShadow = true;
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          -1.25,
         );
         cubes.push({
           object: cube,
