@@ -214,7 +214,7 @@ export function buildCanhao()
    // Base objects
    
    let cubeMesh2 = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1))
-   let cylinderMesh = new THREE.Mesh( new THREE.CylinderGeometry(1.2, 1.5, 0.2, 40))
+   let cylinderMesh = new THREE.Mesh( new THREE.CylinderGeometry(1.2, 1.3, 0.2, 40))
    let cylinderMesh2 = new THREE.Mesh( new THREE.CylinderGeometry(0.4, 0.4, 3, 20))
    let cylinderMesh3 = new THREE.Mesh( new THREE.CylinderGeometry(0.2, 0, 3, 20))
    let torusMesh = new THREE.Mesh( new THREE.TorusGeometry(0.3, 0.1, 20, 30))   
