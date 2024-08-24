@@ -27,9 +27,9 @@ let scene,
   isOrbitEnabled = false,
   initialCameraPosition;
 
-let position =  new THREE.Vector3(1.0, 0.5, 0.2);
+let position =  new THREE.Vector3(1.0, 0.5, 0.6);
 let lightColor = "rgb(255, 255, 255)";
-let dirLight = new DirectionalLight(lightColor, 2.0);
+let dirLight = new DirectionalLight(lightColor, 3.0);
   dirLight.position.copy(position);
 let AmbientLight = new THREE.AmbientLight (AmbientColor);
 scene = new THREE.Scene();

@@ -266,20 +266,10 @@ function updateObject(mesh)
 export function lightMap(posicao)
 {
   //angulospot = THREE.MathUtils.degToRad(90)
-   let position = new THREE.Vector3(0, 1.6, 1.4);
+   let position = new THREE.Vector3(0, 1.0, 1.0);
    let lightColor = "rgb(255, 255, 255)";
-   let spotLight = new THREE.SpotLight(lightColor, 10,10);
+   let spotLight = new THREE.SpotLight(lightColor, 20,30);
    spotLight.position.copy(position);
    spotLight.castShadown = true;
-  // spotLight.shadow.mapSize.width = 512; // default
-  // spotLight.shadow.mapSize.height = 512; // default
-  // spotLight.shadow.camera.near = 0.5; // default
-  // spotLight.shadow.camera.far = 500; // default
-  // spotLight.shadow.focus = 1; // default
-
-  // spotLight.shadow.camera.near = 100;
-  // spotLight.shadow.camera.far = 100;
-  // spotLight.shadow.camera.fov = 10;
-
    return spotLight
 }
