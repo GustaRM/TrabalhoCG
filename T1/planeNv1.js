@@ -30,9 +30,9 @@ let scene,
 
 let position =  new THREE.Vector3(1.0, 0.5, 0.6);
 let lightColor = "rgb(255, 255, 255)";
-let dirLight = new DirectionalLight(lightColor, 3.0);
+let dirLight = new DirectionalLight(lightColor, 0.2);
   dirLight.position.copy(position);
-let AmbientLight = new THREE.AmbientLight (AmbientColor);
+let AmbientLight = new THREE.AmbientLight (AmbientColor, 0.3);
 scene = new THREE.Scene();
 renderer = initRenderer();
 camera = initCamera(new THREE.Vector3(0, -20, 30));
@@ -125,6 +125,7 @@ function checkProjectileCollisions() {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       scene.remove(projectile.bb);
       scene.remove(projectile);
+
       assettank1.colisoes -= 1;
     }
     if (projectile.bb.intersectsBox(assettank2.bb)) {
@@ -318,7 +319,7 @@ function createPlane(nivel) {
 
   //Cria um plano branco do tamanho da matriz
   const geometry = new THREE.PlaneGeometry(
-    stageMatrix[0].length,
+    stageMatrix[1].length,
     stageMatrix.length,
   );
   const material = new THREE.MeshPhongMaterial({
@@ -333,12 +334,13 @@ function createPlane(nivel) {
   plane.receiveShadow = true;
   scene.add(plane);
 
-  var cubeGeometry = new THREE.BoxGeometry(1, 1, 3);
+ 
 
   for (var i = 0; i < stageMatrix.length; i++) {
     for (var j = 0; j < stageMatrix[i].length; j++) {
       // Coloca todos os cubos no plano
       if (stageMatrix[i][j] === 1) {
+        var cubeGeometry = new THREE.BoxGeometry(32, 1, 1);
         let cube = new THREE.Mesh(cubeGeometry, materialCube);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
@@ -352,6 +354,39 @@ function createPlane(nivel) {
         scene.add(cube);
         //aux = aux+1
       }
+
+      if (stageMatrix[i][j] === 14) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 21, 1);
+        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+
+      if (stageMatrix[i][j] === 15) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 6, 1);
+        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      
       // Coloca o tanque 1 no plano
       if (stageMatrix[i][j] === 2) {
         loadGLBFile(
@@ -375,9 +410,6 @@ function createPlane(nivel) {
           -i - 0.5 + stageMatrix.length / 2,
           tank1Material,
         );
-        //cubeplayer2 = createTank('blue');
-        //assetPlayer2.object = cubeplayer2;
-        //scene.add(cubeplayer2);
       }
       if (stageMatrix[i][j] === 4) {
         loadGLBFile(
@@ -480,7 +512,7 @@ function createPlane(nivel) {
         //aux = aux+1
       }
       if (stageMatrix[i][j] === 12) {
-        let cubegeometrywallUp = new THREE.BoxGeometry(1,22,1)
+        let cubegeometrywallUp = new THREE.BoxGeometry(1,21,1)
         let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
         cube.castShadow = true;
         cube.position.set(
@@ -495,7 +527,21 @@ function createPlane(nivel) {
         scene.add(cube);
         //aux = aux+1
       }
+      if (stageMatrix[i][j] === 13) {
+        let cubegeometrywallUp = new THREE.BoxGeometry(1,8,1)
+        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
+        cube.castShadow = true;
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+      }
     }
   }
 }
-

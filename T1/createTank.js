@@ -83,6 +83,8 @@ export function createTank(tankMaterial) {
 //Cria as rodas do tanque
 
 export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
+
+  let materialLife = new THREE.MeshPhongMaterial({ color: "red" });
   let loader = new GLTFLoader();
   loader.load(
     file,
@@ -111,6 +113,12 @@ export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
       let playerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
       asset.bb.setFromObject(obj);
       //console.log(asset.bb);
+
+      let cubegeometryLife = new THREE.BoxGeometry(3,0.3,0.3)
+      let cube = new THREE.Mesh(cubegeometryLife, materialLife);
+      cube.position.set(0,4,1)
+      fixPosition(cube, 0.2, 0.2, 0.2)
+      obj.add(cube);
 
       let helper = new THREE.Box3Helper(asset.bb, "red");
       scene.add(helper);
@@ -157,7 +165,8 @@ export function buildPoste()
    let cylinderMesh2 = new THREE.Mesh( new THREE.CylinderGeometry(0.08, 0.08, 2.5, 20))
    let cylinderMesh3 = new THREE.Mesh( new THREE.CylinderGeometry(0.08, 0.08, 1.3, 20))
    let cylinderMesh4 = new THREE.Mesh( new THREE.CylinderGeometry(0.3, 0.09, 0.3, 20))
-   let cylinderMesh5 = new THREE.Mesh( new THREE.CylinderGeometry(0.2, 0.05, 0.3, 20))    
+   let cylinderMesh5 = new THREE.Mesh( new THREE.CylinderGeometry(0.2, 0.05, 0.3, 20)) 
+      
 
    // CSG holders
    let csgObject, cylinderCSG
