@@ -140,14 +140,31 @@ function checkProjectileCollisions() {
 
 //Funções de colisão
 
-function updateAsset(asset) {
-  asset.bb.copy(asset.object.position);
-  asset.bb.setFromObject(asset.object);
+function updateAsset() {
+  assetPlayer.bb.copy(assetPlayer.object.position);
+  assetPlayer.bb.setFromObject(assetPlayer.object);
+  //if (assetPlayer.colisoes != assetPlayer.object.children[1])
+  //  lifeBar(assetPlayer.colisoes,assetPlayer.object)
+  assettank1.bb.copy(assettank1.object.position);
+  assettank1.bb.setFromObject(assettank1.object);
   
+  assettank2.bb.copy(assettank2.object.position);
+  assettank2.bb.setFromObject(assettank2.object);
+
+
+
   projectiles.forEach((projectile) => {
     projectile.bb.setFromObject(projectile)
     //console.log(projectile.bb);
   });
+}
+
+function lifeBar(vida,objeto)
+{
+  let cubegeometryLife = new THREE.BoxGeometry(vida,0.3,0.3)
+  let cube = new THREE.Mesh(cubegeometryLife, materialLife);
+  cube.position.set(0,4,1)
+  fixPosition(cube, 0.2, 0.2, 0.2)
 }
 
 

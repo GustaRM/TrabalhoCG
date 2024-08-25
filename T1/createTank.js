@@ -112,11 +112,6 @@ export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
       asset.bb.setFromObject(obj);
       //console.log(asset.bb);
 
-      let cubegeometryLife = new THREE.BoxGeometry(3,0.3,0.3)
-      let cube = new THREE.Mesh(cubegeometryLife, materialLife);
-      cube.position.set(0,4,1)
-      fixPosition(cube, 0.2, 0.2, 0.2)
-      obj.add(cube);
 
       let helper = new THREE.Box3Helper(asset.bb, "red");
       scene.add(helper);
