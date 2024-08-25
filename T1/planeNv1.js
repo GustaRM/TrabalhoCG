@@ -40,6 +40,17 @@ initialCameraPosition = camera.position.clone();
 orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
+const targetPoste1 = new THREE.Object3D()
+targetPoste1.position.set(-12,5,-10)
+
+const targetPoste2 = new THREE.Object3D()
+targetPoste2.position.set(12,-3,-8)
+const targetPoste3 = new THREE.Object3D()
+targetPoste3.position.set(0,5,-10)
+
+const targetPoste4 = new THREEo.Object3D()
+targetPoste4.position.set(0,-5,-10)
+
 
 window.addEventListener("resize", onWindowResize, false);
 
@@ -525,12 +536,15 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 6) {
         let cube = buildPoste();
-        const targetPoste = new THREE.Vector3(5,5,5)
         cube.position.set(
           j + 0.25 - stageMatrix[i].length / 2,
           -i - 0.25 + stageMatrix.length / 2,
           0,
         );
+        //ok
+        scene.add(targetPoste1)
+        cube.children[0].target = targetPoste1
+        console.log(cube.children[0].target)
         //cube.children[0].target(targ)
         console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
@@ -545,6 +559,9 @@ function createPlane(nivel) {
           -i - 0.75 + stageMatrix.length / 2,
           0,
         );
+        scene.add(targetPoste4)
+        cube.children[0].target = targetPoste4
+        console.log(cube.children[0].target)
         cube.scale.set(1.4,1.4,1.4)
         
         scene.add(cube);
@@ -556,6 +573,9 @@ function createPlane(nivel) {
           -i - 0.75 + stageMatrix.length / 2,
           0,
         );
+        scene.add(targetPoste2)
+        cube.children[0].target = targetPoste2
+        console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(45))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
@@ -567,6 +587,11 @@ function createPlane(nivel) {
           -i - 0.25 + stageMatrix.length / 2,
           0,
         );
+
+        //ok
+        scene.add(targetPoste3)
+        cube.children[0].target = targetPoste3
+        console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(180))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
