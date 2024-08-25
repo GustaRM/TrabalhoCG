@@ -267,7 +267,7 @@ function updateObject(mesh)
 export function lightMap(posicao)
 {
   //angulospot = THREE.MathUtils.degToRad(90)
-   let position = new THREE.Vector3(0, 1.0, 1.0);
+   let position = new THREE.Vector3(0, 1.4, 2.0);
    let lightColor = "rgb(255, 255, 255)";
    let spotLight = new THREE.SpotLight(lightColor, 20,30);
    spotLight.position.copy(position);
