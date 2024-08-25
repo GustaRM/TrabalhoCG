@@ -19,6 +19,7 @@ import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.j
 import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
 import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
+let UltimoTiro = Date.now();
 
 let scene,
   renderer,
@@ -95,6 +96,19 @@ let assettank2 = {
 mapa_atual =  createPlane(2);
 render();
 
+function tanksController(){
+  if( Date.now() - UltimoTiro > 3000)
+  {
+    
+
+    if (assettank1.colisoes > 0)
+    projectiles.push(shoot(assettank1.object, 0.15, scene));
+    if (assettank2.colisoes > 0)
+    projectiles.push(shoot(assettank2.object, 0.15, scene));
+    UltimoTiro = Date.now();
+  }
+}
+
 function render() {
   infoBox.changeMessage("No collision detected");
 
@@ -109,6 +123,7 @@ function render() {
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
+    tanksController();
   }
   keyboardUpdate(); //Movimenta os players
   requestAnimationFrame(render);
@@ -150,7 +165,7 @@ function checkProjectileCollisions() {
       scene.remove(projectile.bb);
       scene.remove(projectile);
       assetPlayer.colisoes -= 1;
-      console.log("sucesso")
+      //console.log("sucesso")
     }
     
     if (assettank1.bb.intersectsBox(projectile.bb)) {
@@ -355,7 +370,8 @@ function keyboardUpdate() {
   if (keyboard.down("3")) {
     projectiles.forEach((projectile) => {
       asset.bb.setFromObject(asset.object)
-      console.log(projectile)});
+      //console.log(projectile)
+      });
   }
   
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
@@ -544,9 +560,9 @@ function createPlane(nivel) {
         //ok
         scene.add(targetPoste1)
         cube.children[0].target = targetPoste1
-        console.log(cube.children[0].target)
+        //console.log(cube.children[0].target)
         //cube.children[0].target(targ)
-        console.log(cube)
+        //console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
@@ -561,7 +577,7 @@ function createPlane(nivel) {
         );
         scene.add(targetPoste4)
         cube.children[0].target = targetPoste4
-        console.log(cube.children[0].target)
+        //console.log(cube.children[0].target)
         cube.scale.set(1.4,1.4,1.4)
         
         scene.add(cube);
@@ -575,7 +591,7 @@ function createPlane(nivel) {
         );
         scene.add(targetPoste2)
         cube.children[0].target = targetPoste2
-        console.log(cube.children[0].target)
+        //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(45))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
@@ -591,7 +607,7 @@ function createPlane(nivel) {
         //ok
         scene.add(targetPoste3)
         cube.children[0].target = targetPoste3
-        console.log(cube.children[0].target)
+        //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(180))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
