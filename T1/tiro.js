@@ -33,7 +33,7 @@ export function shoot(tank, speed, scene) {
 }
 
 function getTankDirection(tank) {
-  console.log(tank)
+  //console.log(tank)
   const direction = tank.getWorldDirection(new THREE.Vector3());
   const xDirection = direction.x;
   const yDirection = direction.y;
