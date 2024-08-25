@@ -48,7 +48,7 @@ targetPoste2.position.set(12,-3,-8)
 const targetPoste3 = new THREE.Object3D()
 targetPoste3.position.set(0,5,-10)
 
-const targetPoste4 = new THREEo.Object3D()
+const targetPoste4 = new THREE.Object3D()
 targetPoste4.position.set(0,-5,-10)
 
 
