@@ -52,7 +52,7 @@ function onWindowResize() {
 
 const rotationSpeed = 0.03;
 const moveSpeed = 0.05;
-const cooldown = 2;
+const cooldown = 3;
 let mapa_atual ;
 const playerMaterial = new THREE.MeshPhongMaterial({ color: "green" });
 const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
@@ -61,6 +61,7 @@ const level2WallsMaterial = new THREE.MeshLambertMaterial({color: "green"})
 let cubes = [];
 let projectiles = [];
 var infoBox = new SecondaryBox("");
+var auxCanhaoCentral;
 
 let assetPlayer = {
   object: null,
@@ -246,6 +247,8 @@ function updateAsset() {
     projectile.bb.setFromObject(projectile)
     //console.log(projectile.bb);
   });
+
+  movCanhaoCentral();
 }
 
 function lifeBar(vida,objeto)
@@ -292,12 +295,18 @@ function getTankDirection(tank) {
   return direction;
 }
 
+function movCanhaoCentral()
+{
+  auxCanhaoCentral.rotateZ(0.01);
+  
+}
+
 
 //Funções para movimentar e atirar
 function keyboardUpdate() {
   var keyboard = new KeyboardState();
   keyboard.update();
-  if (keyboard.pressed("Q")) console.log(assettank1);
+  if (keyboard.pressed("Q")) console.log(auxCanhaoCentral);
   if (keyboard.pressed("A")) {assetPlayer.object.rotateY(rotationSpeed)};
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
@@ -511,16 +520,19 @@ function createPlane(nivel) {
         );
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
+        auxCanhaoCentral = cube;
         //aux = aux+1
       }
       if (stageMatrix[i][j] === 6) {
         let cube = buildPoste();
-        const targetPoste = new THREE.Object3D
+        const targetPoste = new THREE.Vector3(5,5,5)
         cube.position.set(
           j + 0.25 - stageMatrix[i].length / 2,
           -i - 0.25 + stageMatrix.length / 2,
           0,
         );
+        //cube.children[0].target(targ)
+        console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
         cube.scale.set(1.4,1.4,1.4)
         scene.add(cube);
