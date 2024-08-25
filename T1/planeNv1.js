@@ -44,12 +44,12 @@ const targetPoste1 = new THREE.Object3D()
 targetPoste1.position.set(-12,5,-10)
 
 const targetPoste2 = new THREE.Object3D()
-targetPoste2.position.set(12,-3,-8)
+targetPoste2.position.set(12,-5,-10)
 const targetPoste3 = new THREE.Object3D()
-targetPoste3.position.set(0,5,-10)
+targetPoste3.position.set(1,6,-10)
 
 const targetPoste4 = new THREE.Object3D()
-targetPoste4.position.set(0,-5,-10)
+targetPoste4.position.set(1,-6,-10)
 
 
 window.addEventListener("resize", onWindowResize, false);
