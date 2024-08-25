@@ -53,7 +53,7 @@ function onWindowResize() {
 const rotationSpeed = 0.03;
 const moveSpeed = 0.05;
 const cooldown = 2;
-
+let mapa_atual ;
 const playerMaterial = new THREE.MeshPhongMaterial({ color: "green" });
 const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
 const tank2Material = new THREE.MeshPhongMaterial({ color: "red" });
@@ -64,23 +64,23 @@ var infoBox = new SecondaryBox("");
 
 let assetPlayer = {
   object: null,
-  colisoes: 3,
+  colisoes: 10,
   bb: new THREE.Box3(),
 };
 
 let assettank1 = {
   object: null,
-  colisoes: 3,
+  colisoes: 10,
   bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
 };
 
 let assettank2 = {
   object: null,
-  colisoes: 3,
+  colisoes: 10,
   bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
 };
 
-createPlane(2);
+mapa_atual =  createPlane(2);
 render();
 
 function render() {
@@ -93,13 +93,14 @@ function render() {
     assettank1.object != null &&
     assettank2.object != null
   ) {
-    assettank1.object.rotateX(0.01);
+    //assettank1.object.rotateX(0.01);
     updateAsset(assetPlayer);
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
   }
   keyboardUpdate(); //Movimenta os players
   requestAnimationFrame(render);
+  checkRestart()
   renderer.render(scene, camera);
 }
 function updateProjectiles(projectiles) {
@@ -109,32 +110,83 @@ function updateProjectiles(projectiles) {
   });
 }
 
+function checkRestart(){
+  //console.log (assettank1)
+  if(assetPlayer.colisoes == 0){
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
+    mapa_atual = createPlane(mapa_atual);
+    
+  }
+  if (assettank1.colisoes < 1){
+    if (assettank2.colisoes < 1){
+      while (scene.children.length > 0) {
+        scene.remove(scene.children[0]);
+      }
+      mapa_atual = createPlane(mapa_atual);
+    }
+  }
+}
 function checkProjectileCollisions() {
   projectiles.forEach((projectile,index) => {
     if (projectile.bb.intersectsBox(assetPlayer.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index];
+
+      
       scene.remove(projectile.bb);
       scene.remove(projectile);
-      assetPlayer.colisoes = +1;
+      assetPlayer.colisoes -= 1;
       console.log("sucesso")
     }
+    
     if (assettank1.bb.intersectsBox(projectile.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       scene.remove(projectile.bb);
       scene.remove(projectile);
 
       assettank1.colisoes -= 1;
+
+      if(assettank1.colisoes == 0)
+        {
+          scene.remove(assettank1.bb);
+          scene.remove(assettank1.object)
+        }
+      projectile.remove;
     }
-    if (projectile.bb.intersectsBox(assettank2.bb)) {
+
+    if (assettank2.bb.intersectsBox(projectile.bb)) {
+      projectiles.splice(projectiles.indexOf(projectile), 1);
+      scene.remove(projectile.bb);
+      scene.remove(projectile);
+
+      assettank2.colisoes -= 1;
+
+      if(assettank2.colisoes == 0)
+        {
+          scene.remove(assettank2.bb);
+          scene.remove(assettank2.object)
+        }
+      projectile.remove;
+    }
+
+    /*if (projectile.bb.intersectsBox(assettank2.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index]
       scene.remove(projectile.bb);
       scene.remove(projectile);
       assettank2.colisoes = -1;
+
+      if(assettank2.colisoes == 0)
+      {
+          scene.remove(assettank2.bb);
+          scene.remove(assettank2.object)
+      }
       console.log("sucesso")
       projectile.remove;
     }
+    */
   });
 }
 
@@ -142,17 +194,53 @@ function checkProjectileCollisions() {
 //Funções de colisão
 
 function updateAsset() {
+  if (assetPlayer.colisoes > 0){
   assetPlayer.bb.copy(assetPlayer.object.position);
   assetPlayer.bb.setFromObject(assetPlayer.object);
-  //if (assetPlayer.colisoes != assetPlayer.object.children[1])
-  //  lifeBar(assetPlayer.colisoes,assetPlayer.object)
+  if (assetPlayer.object.children.length == 1)
+    lifeBar(assetPlayer.colisoes,assetPlayer.object)
+    
+    if (assetPlayer.colisoes != assetPlayer.object.children[1].geometry.parameters.width)
+      assetPlayer.object.remove(assetPlayer.object.children [1])
+        lifeBar(assetPlayer.colisoes,assetPlayer.object)
+  }
+  else
+  {
+    assetPlayer.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+  }
+
+  if (assettank1.colisoes > 0){
   assettank1.bb.copy(assettank1.object.position);
   assettank1.bb.setFromObject(assettank1.object);
-  
+  if (assettank1.object.children.length == 1)
+    lifeBar(assettank1.colisoes,assettank1.object)
+  if (assettank1.colisoes != assettank1.object.children[1].geometry.parameters.width)
+  {
+    assettank1.object.remove(assettank1.object.children [1])
+    lifeBar(assettank1.colisoes,assettank1.object)
+  }
+  }
+  else
+  {
+    assettank1.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+  }
+
+  if (assettank2.colisoes > 0){
   assettank2.bb.copy(assettank2.object.position);
   assettank2.bb.setFromObject(assettank2.object);
 
-
+  if (assettank2.object.children.length == 1)
+    lifeBar(assettank2.colisoes,assettank2.object)
+    if (assettank2.colisoes != assettank2.object.children[1].geometry.parameters.width)
+    {
+      assettank2.object.remove(assettank2.object.children [1])
+      lifeBar(assettank2.colisoes,assettank2.object)
+    }  
+  }
+  else
+  {
+    assettank2.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+  }
 
   projectiles.forEach((projectile) => {
     projectile.bb.setFromObject(projectile)
@@ -162,10 +250,11 @@ function updateAsset() {
 
 function lifeBar(vida,objeto)
 {
-  let cubegeometryLife = new THREE.BoxGeometry(vida,0.3,0.3)
+  let materialLife = new THREE.MeshPhongMaterial({ color: "red" });
+  let cubegeometryLife = new THREE.BoxGeometry(vida*4/10,0.3,0.3)
   let cube = new THREE.Mesh(cubegeometryLife, materialLife);
   cube.position.set(0,4,1)
-  fixPosition(cube, 0.2, 0.2, 0.2)
+  objeto.add(cube)
 }
 
 
@@ -208,8 +297,8 @@ function getTankDirection(tank) {
 function keyboardUpdate() {
   var keyboard = new KeyboardState();
   keyboard.update();
-  if (keyboard.pressed("Q")) console.log(assetPlayer.object);
-  if (keyboard.pressed("A")) {assetPlayer.object.rotateY(rotationSpeed); assetPlayer.object.children[1].rotateX(-rotationSpeed)};
+  if (keyboard.pressed("Q")) console.log(assettank1);
+  if (keyboard.pressed("A")) {assetPlayer.object.rotateY(rotationSpeed)};
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
   if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
@@ -232,7 +321,7 @@ function keyboardUpdate() {
       scene.remove(scene.children[0]);
     }
     
-    createPlane(1);
+    mapa_atual = createPlane(1);
   }
 
    //Altera mapa para nivel 2
@@ -241,7 +330,7 @@ function keyboardUpdate() {
     while (scene.children.length > 0) {
       scene.remove(scene.children[0]);
     }
-    createPlane(2);
+    mapa_atual = createPlane(2);
   }
   if (keyboard.down("3")) {
     projectiles.forEach((projectile) => {
@@ -297,7 +386,11 @@ function calcDistancia(asset1, asset2) {
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
   const stageMatrix = stageSelector(nivel);
-
+  cubes = []
+  assetPlayer.colisoes = 10
+  assettank1.colisoes = 10
+  assettank2.colisoes = 10
+  projectiles = []
   //adicionar iluminação aqui
   scene.add(dirLight);
   scene.add(AmbientLight);
@@ -422,6 +515,7 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 6) {
         let cube = buildPoste();
+        const targetPoste = new THREE.Object3D
         cube.position.set(
           j + 0.25 - stageMatrix[i].length / 2,
           -i - 0.25 + stageMatrix.length / 2,
@@ -440,6 +534,7 @@ function createPlane(nivel) {
           0,
         );
         cube.scale.set(1.4,1.4,1.4)
+        
         scene.add(cube);
       }
       if (stageMatrix[i][j] === 8) {
@@ -531,4 +626,5 @@ function createPlane(nivel) {
       }
     }
   }
+  return nivel
 }

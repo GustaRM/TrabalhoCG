@@ -20,7 +20,7 @@ function checkColisionSide(object, wall)
    var BoxAux = new THREE.Box3();
    BoxAux.copy(object.bb);
    //const aux=getTankDirection(object)
-   console.log(object)
+   //console.log(object)
    BoxAux.max.y = (object.bb.max.y+object.velocity.y)
    BoxAux.min.y = (object.bb.min.y+object.velocity.y)
    //console.log(BoxAux)   
@@ -34,11 +34,11 @@ function checkColisionSide(object, wall)
       BoxAux.min.y = (object.bb.min.y-object.velocity.y)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
       {
-         console.log("duplaY")
+         //console.log("duplaY")
       }
       else 
       {
-         console.log("simplesY")
+         //console.log("simplesY")
          object.velocity.y = -object.velocity.y;
          object.position.y = object.position.y + object.velocity.y;
       }
@@ -59,11 +59,11 @@ function checkColisionSide(object, wall)
       BoxAux.min.x = (object.bb.min.x-object.velocity.x)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
       {
-         console.log("duplaX")
+         //console.log("duplaX")
       }
       else 
       {
-         console.log("simplesX")
+         //console.log("simplesX")
          object.velocity.x = -object.velocity.x;
          object.position.x = object.position.x + object.velocity.x;
       }

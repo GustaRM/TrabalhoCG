@@ -82,7 +82,6 @@ export function createTank(tankMaterial) {
 
 export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
 
-  let materialLife = new THREE.MeshPhongMaterial({ color: "red" });
   let loader = new GLTFLoader();
   loader.load(
     file,
@@ -112,9 +111,8 @@ export function loadGLBFile(scene, asset, file, desiredScale, X, Y, material) {
       asset.bb.setFromObject(obj);
       //console.log(asset.bb);
 
-
       let helper = new THREE.Box3Helper(asset.bb, "red");
-      scene.add(helper);
+      //scene.add(helper);
 
       // Store loaded gltf in our js object
       asset.object = gltf.scene;
