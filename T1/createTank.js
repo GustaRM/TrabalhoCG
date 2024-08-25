@@ -219,8 +219,7 @@ export function buildCanhao()
    let cylinderMesh2 = new THREE.Mesh( new THREE.CylinderGeometry(0.4, 0.4, 2, 20))
    let cylinderMesh3 = new THREE.Mesh( new THREE.CylinderGeometry(0.2, 0, 3, 20))
    let cylinderMesh4 = new THREE.Mesh( new THREE.CylinderGeometry(0.35, 0.35, 3, 15))
-   let cylinderMesh5 = new THREE.Mesh( new THREE.CylinderGeometry(0.3, 0.3, 3, 10))
-   let torusMesh = new THREE.Mesh( new THREE.TorusGeometry(0.3, 0.1, 20, 30))   
+   let cylinderMesh5 = new THREE.Mesh( new THREE.CylinderGeometry(0.3, 0.3, 3, 10))   
 
    // CSG holders
    let csgObject, cubeCSG2, cylinderCSG, torusCSG
