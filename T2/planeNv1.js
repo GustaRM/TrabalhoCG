@@ -294,13 +294,16 @@ function checkWallCollisions(cubes) {
     collisionP2 = assettank1.bb.intersectsBox(wall.bb);
     collisionP3 = assettank2.bb.intersectsBox(wall.bb);
     if (collisionP1) {
+      checkColisionSideTank(assetPlayer, wall);
       infoBox.changeMessage("Collision detected Player");
     }
     if (collisionP2) {
+      checkColisionSideTank(assettank1, wall);
       infoBox.changeMessage("Collision detected tank1");
     }
 
     if (collisionP3) {
+      checkColisionSideTank(assettank2, wall);
       infoBox.changeMessage("Collision detected tank2");
     }
 
