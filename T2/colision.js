@@ -76,19 +76,20 @@ function checkColisionSide(object, wall)
 
 export function checkColisionSideTank(tank, wall) 
 {
-   const projectileDirection = getTankDirection(tank.object);
-   console.log(projectileDirection)
+   const tankdirection = getTankDirection(tank.object);
+   tankdirection.multiplyScalar(0.15);
+   console.log(tankdirection)
    var BoxAux = new THREE.Box3();
    BoxAux.copy(tank.bb);
    console.log(BoxAux)
    console.log(tank)
-   BoxAux.max.y = (tank.bb.max.y+0.2)
-   BoxAux.min.y = (tank.bb.min.y+0.2)
+   BoxAux.max.y = (tank.bb.max.y+tankdirection.y)
+   BoxAux.min.y = (tank.bb.min.y+tankdirection.y)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido Y do tiro
    {
       BoxAux.copy(tank.bb);
-      BoxAux.max.y = (tank.bb.max.y-0.2)
-      BoxAux.min.y = (tank.bb.min.y-0.2)
+      BoxAux.max.y = (tank.bb.max.y-tankdirection.y)
+      BoxAux.min.y = (tank.bb.min.y-tankdirection.y)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
       {
          console.log("duplaY")
@@ -96,13 +97,13 @@ export function checkColisionSideTank(tank, wall)
       else 
       {
          console.log("simplesY")
-         tank.object.position.y = tank.object.position.y + tank.object.direction.y;
+         tank.object.position.y = tank.object.position.y - tankdirection.y;
       }
    }
 
-   BoxAux.copy(object.bb);
-   BoxAux.max.x = (object.bb.max.x+0.2)
-   BoxAux.min.x = (object.bb.min.x+0.2)
+   BoxAux.copy(tank.bb);
+   BoxAux.max.x = (tank.bb.max.x+tankdirection.x)
+   BoxAux.min.x = (tank.bb.min.x+tankdirection.x)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido X do tiro
    {
       BoxAux.copy(object.bb);
@@ -115,13 +116,12 @@ export function checkColisionSideTank(tank, wall)
       else 
       {
          console.log("simplesX")
-         object.velocity.x = -object.velocity.x;
-         object.position.x = object.position.x + object.velocity.x;
+         tank.object.position.x -= tankdirection.x;
       }
    }
    else
    {
-      object.position.y
+      tank.object.position.y = tank.object.position.y
    }
 }
 

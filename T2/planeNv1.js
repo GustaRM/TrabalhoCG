@@ -16,7 +16,6 @@ import {
 import { shoot } from "./tiro.js";
 import { Color, DirectionalLight, Vector3 } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
-import { GLTFLoader } from "../build/jsm/loaders/GLTFLoader.js";
 import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
 let UltimoTiro = Date.now();
