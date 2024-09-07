@@ -76,19 +76,19 @@ function checkColisionSide(object, wall)
 
 export function checkColisionSideTank(tank, wall) 
 {
-   const tankdirection = getTankDirection(tank.object);
-   console.log(tankdirection)
+   const projectileDirection = getTankDirection(tank.object);
+   console.log(projectileDirection)
    var BoxAux = new THREE.Box3();
    BoxAux.copy(tank.bb);
    console.log(BoxAux)
    console.log(tank)
-   BoxAux.max.y = (tank.bb.max.y+0.02)
-   BoxAux.min.y = (tank.bb.min.y+0.02)
+   BoxAux.max.y = (tank.bb.max.y+0.2)
+   BoxAux.min.y = (tank.bb.min.y+0.2)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido Y do tiro
    {
       BoxAux.copy(tank.bb);
-      BoxAux.max.y = (tank.bb.max.y-0.02)
-      BoxAux.min.y = (tank.bb.min.y-0.02)
+      BoxAux.max.y = (tank.bb.max.y-0.2)
+      BoxAux.min.y = (tank.bb.min.y-0.2)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
       {
          console.log("duplaY")
@@ -100,14 +100,14 @@ export function checkColisionSideTank(tank, wall)
       }
    }
 
-   BoxAux.copy(tank.bb);
-   BoxAux.max.x = (tank.bb.max.x+0.02)
-   BoxAux.min.x = (tank.bb.min.x+0.02)
+   BoxAux.copy(object.bb);
+   BoxAux.max.x = (object.bb.max.x+0.2)
+   BoxAux.min.x = (object.bb.min.x+0.2)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido X do tiro
    {
-      BoxAux.copy(tank.bb);
-      BoxAux.max.x = (tank.bb.max.x-tankdirection.x)
-      BoxAux.min.x = (tank.bb.min.x-tankdirection.x)
+      BoxAux.copy(object.bb);
+      BoxAux.max.x = (object.bb.max.x-object.velocity.x)
+      BoxAux.min.x = (object.bb.min.x-object.velocity.x)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
       {
          console.log("duplaX")
@@ -115,12 +115,13 @@ export function checkColisionSideTank(tank, wall)
       else 
       {
          console.log("simplesX")
-         tank.object.position.x += tankdirection.x;
+         object.velocity.x = -object.velocity.x;
+         object.position.x = object.position.x + object.velocity.x;
       }
    }
    else
    {
-      tank.position.y
+      object.position.y
    }
 }
 
