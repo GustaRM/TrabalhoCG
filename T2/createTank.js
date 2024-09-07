@@ -216,9 +216,9 @@ export function buildCanhao()
    
    let cubeMesh2 = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1))
    let cylinderMesh = new THREE.Mesh( new THREE.CylinderGeometry(1.2, 1.3, 0.2, 40))
-   let cylinderMesh2 = new THREE.Mesh( new THREE.CylinderGeometry(0.4, 0.4, 2, 20))
+   let cylinderMesh2 = new THREE.Mesh( new THREE.CylinderGeometry(0.4, 0.4, 1.6, 20))
    let cylinderMesh3 = new THREE.Mesh( new THREE.CylinderGeometry(0.2, 0, 3, 20))
-   let cylinderMesh4 = new THREE.Mesh( new THREE.CylinderGeometry(0.35, 0.35, 3, 15))
+   let cylinderMesh4 = new THREE.Mesh( new THREE.CylinderGeometry(0.35, 0.35, 2, 15))
    let cylinderMesh5 = new THREE.Mesh( new THREE.CylinderGeometry(0.3, 0.3, 3, 10))   
 
    // CSG holders
@@ -235,24 +235,24 @@ export function buildCanhao()
    csgObject = cylinderMesh.union(cubeCSG2) 
    
    // Adicionando Cilindro de cima
-   cylinderMesh2.position.set(0, 0.2, 1.1)
+   cylinderMesh2.position.set(0, -0.6, 1.1)
    updateObject(cylinderMesh2)
    cylinderCSG = CSG.fromMesh(cylinderMesh2)  
    csgObject = csgObject.union(cylinderCSG) 
 
    
-   cylinderMesh4.position.set(0, 0.4, 1.1)
+   cylinderMesh4.position.set(0, -0.1, 1.1)
    updateObject(cylinderMesh4)
    cylinderCSG = CSG.fromMesh(cylinderMesh4)  
    csgObject = csgObject.union(cylinderCSG)
 
-   cylinderMesh5.position.set(0, 1, 1.1)
+   cylinderMesh5.position.set(0, 0, 1.1)
    updateObject(cylinderMesh5)
    cylinderCSG = CSG.fromMesh(cylinderMesh5)  
    csgObject = csgObject.union(cylinderCSG)
 
   // Abrindo o Cilindo no centro
-  cylinderMesh3.position.set(0, 1.1, 1.1)
+  cylinderMesh3.position.set(0, 1.2, 1.1)
   updateObject(cylinderMesh3)
   cylinderCSG = CSG.fromMesh(cylinderMesh3)  
   csgObject = csgObject.subtract(cylinderCSG)
