@@ -306,6 +306,11 @@ function checkWallCollisions(cubes) {
     projectiles.forEach((projectile) => {
       if (projectile.bb.intersectsBox(wall.bb)) {
         colisao(projectile, wall);
+
+        if (projectile.colisoes >= 3) {
+          scene.remove(projectile);
+          scene.remove(projectile.bb);
+        }
       }
     });
   });
