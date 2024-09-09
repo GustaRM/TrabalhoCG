@@ -311,6 +311,7 @@ function checkWallCollisions(cubes) {
         colisao(projectile, wall);
 
         if (projectile.colisoes >= 3) {
+          projectiles.splice(projectiles.indexOf(projectile), 1);
           scene.remove(projectile);
           scene.remove(projectile.bb);
         }
@@ -373,12 +374,6 @@ function keyboardUpdate() {
       scene.remove(scene.children[0]);
     }
     mapa_atual = createPlane(2);
-  }
-  if (keyboard.down("3")) {
-    projectiles.forEach((projectile) => {
-      asset.bb.setFromObject(asset.object)
-      //console.log(projectile)
-      });
   }
   
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
