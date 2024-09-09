@@ -106,9 +106,9 @@ export function checkColisionSideTank(tank, wall)
    BoxAux.min.x = (tank.bb.min.x+tankdirection.x)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido X do tiro
    {
-      BoxAux.copy(object.bb);
-      BoxAux.max.x = (object.bb.max.x-object.velocity.x)
-      BoxAux.min.x = (object.bb.min.x-object.velocity.x)
+      BoxAux.copy(tank.bb);
+      BoxAux.max.x = (tank.bb.max.x-tankdirection.x)
+      BoxAux.min.x = (tank.bb.min.x-tankdirection.x)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
       {
          console.log("duplaX")
