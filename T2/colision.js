@@ -100,7 +100,11 @@ export function checkColisionSideTank(tank, wall)
          tank.object.position.y = tank.object.position.y - tankdirection.y;
       }
    }
-
+   else
+   {
+      console.log("não sei")
+      tank.object.position.y = tank.object.position.y + tankdirection.y
+   }
    BoxAux.copy(tank.bb);
    BoxAux.max.x = (tank.bb.max.x+tankdirection.x)
    BoxAux.min.x = (tank.bb.min.x+tankdirection.x)
@@ -111,17 +115,18 @@ export function checkColisionSideTank(tank, wall)
       BoxAux.min.x = (tank.bb.min.x-tankdirection.x)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido X do tiro
       {
-         console.log("duplaX")
+         //console.log("duplaX")
       }
       else 
       {
-         console.log("simplesX")
+        //console.log("simplesX")
          tank.object.position.x -= tankdirection.x;
       }
    }
    else
    {
-      tank.object.position.y = tank.object.position.y
+      console.log("não sei")
+      tank.object.position.x += tankdirection.x;
    }
 }
 
