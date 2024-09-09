@@ -126,13 +126,6 @@ export function checkColisionSideTank(tank, wall)
 }
 
 export function colisao ( projectile , wall ) {
-   projectile.bb.intersectsBox(wall.bb);
-   if (projectile.colisao > 3)
-   {
-   }
-   else
-   {
-      projectile.colisoes++;
-      checkColisionSide(projectile, wall);
-   }
+   projectile.colisoes++;
+   checkColisionSide(projectile, wall);
 }
