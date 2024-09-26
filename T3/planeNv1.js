@@ -41,15 +41,15 @@ orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
 const targetPoste1 = new THREE.Object3D()
-targetPoste1.position.set(-12,5,-10)
+targetPoste1.position.set(-9,4,-3)
 
 const targetPoste2 = new THREE.Object3D()
-targetPoste2.position.set(12,-5,-10)
+targetPoste2.position.set(3,-2,-7)
 const targetPoste3 = new THREE.Object3D()
-targetPoste3.position.set(1,6,-10)
+targetPoste3.position.set(-2,2,-10)
 
 const targetPoste4 = new THREE.Object3D()
-targetPoste4.position.set(1,-6,-10)
+targetPoste4.position.set(-2,-1,-10)
 
 
 window.addEventListener("resize", onWindowResize, false);
@@ -69,6 +69,9 @@ const playerMaterial = new THREE.MeshPhongMaterial({ color: "green" });
 const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
 const tank2Material = new THREE.MeshPhongMaterial({ color: "red" });
 const level2WallsMaterial = new THREE.MeshLambertMaterial({color: "green"})
+const level3WallsMaterial = new THREE.MeshLambertMaterial({color: "blue"})
+const levelConectorMaterial = new THREE.MeshLambertMaterial({color: "red"})
+const sliderMaterial = new THREE.MeshLambertMaterial({color: "yellow"})
 let cubes = [];
 let projectiles = [];
 var infoBox = new SecondaryBox("");
@@ -92,7 +95,45 @@ let assettank2 = {
   bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
 };
 
-mapa_atual =  createPlane(2);
+
+let assettank3 = {
+  object: null,
+  colisoes: 10,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
+let assettank4 = {
+  object: null,
+  colisoes: 10,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
+
+let assettank5 = {
+  object: null,
+  colisoes: 10,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
+let assettank6 = {
+  object: null,
+  colisoes: 10,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
+
+let assettank7 = {
+  object: null,
+  colisoes: 10,
+  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
+};
+
+const P = 99
+const C = 98
+
+
+
+mapa_atual =  createPlane(3);
 render();
 
 function tanksController(){
@@ -375,7 +416,13 @@ function keyboardUpdate() {
     }
     mapa_atual = createPlane(2);
   }
-  
+  if (keyboard.down("3")) {
+    scene.remove(scene);
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
+    mapa_atual = createPlane(3);
+  }
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
   if (keyboard.down("O")) {
     isOrbitEnabled = !isOrbitEnabled;
@@ -406,8 +453,6 @@ function calcularDistanciaPlayers() {
 
     midpoint
     .add(assetPlayer.object.position)
-    .add(assettank1.object.position)
-    .add(assettank2.object.position)
     .divideScalar(4);
     const d1 = calcDistancia(assetPlayer, assettank1);
     const d2 = calcDistancia(assetPlayer, assettank2);
@@ -460,8 +505,56 @@ function createPlane(nivel) {
   for (var i = 0; i < stageMatrix.length; i++) {
     for (var j = 0; j < stageMatrix[i].length; j++) {
       // Coloca todos os cubos no plano
+      
+      if (stageMatrix[i][j] === 4) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
+        let cube = new THREE.Mesh(cubeGeometry, levelConectorMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 7 || stageMatrix[i][j] === 6) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
+        let cube = new THREE.Mesh(cubeGeometry, sliderMaterial);
+        cube.position.set(
+          j +0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+
       if (stageMatrix[i][j] === 1) {
-        var cubeGeometry = new THREE.BoxGeometry(32, 1, 1);
+        var cubeGeometry = new THREE.BoxGeometry(17, 1, 1);
+        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+
+      if (stageMatrix[i][j] === 11) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
         let cube = new THREE.Mesh(cubeGeometry, materialCube);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
@@ -477,7 +570,7 @@ function createPlane(nivel) {
       }
 
       if (stageMatrix[i][j] === 14) {
-        var cubeGeometry = new THREE.BoxGeometry(1, 21, 1);
+        var cubeGeometry = new THREE.BoxGeometry(1, 11, 1);
         let cube = new THREE.Mesh(cubeGeometry, materialCube);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
@@ -492,6 +585,150 @@ function createPlane(nivel) {
         //aux = aux+1
       }
 
+      //stage 2 Walls
+      if (stageMatrix[i][j] === 20) {
+        var cubeGeometry = new THREE.BoxGeometry(18, 1, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.position.set(
+          j + 0 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 21) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 22) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 4, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+
+      if (stageMatrix[i][j] === 5) {
+        var cubeGeometry = new THREE.BoxGeometry(2, 2, 0.25);
+        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        cube.position.set(
+          j + 1 - stageMatrix[i].length / 2,
+          -i - 1 + stageMatrix.length / 2,
+          0.125,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+
+
+
+
+      //stage 3 walls
+
+      if (stageMatrix[i][j] === 32) {
+        var cubeGeometry = new THREE.BoxGeometry(22, 1, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        cube.position.set(
+          j  - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 31) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 15, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 33) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 34) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
+        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 41) {
+        var cubeGeometry = new THREE.BoxGeometry(3, 1, 1);
+        let cube = new THREE.Mesh(cubeGeometry, levelConectorMaterial);
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      /*
       if (stageMatrix[i][j] === 15) {
         var cubeGeometry = new THREE.BoxGeometry(1, 6, 1);
         let cube = new THREE.Mesh(cubeGeometry, materialCube);
@@ -507,55 +744,55 @@ function createPlane(nivel) {
         scene.add(cube);
         //aux = aux+1
       }
-      
+      */
       // Coloca o tanque 1 no plano
-      if (stageMatrix[i][j] === 2) {
+      if (stageMatrix[i][j] === 97) {
         loadGLBFile(
           scene,
           assetPlayer,
           "../assets/objects/toontanktrab2.glb",
-          3.0,
+          1.5,
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
           playerMaterial,
         );
       }
       // Coloca o tanque 2 no plano
-      if (stageMatrix[i][j] === 3) {
+      if (stageMatrix[i][j] === 92) {
         loadGLBFile(
           scene,
           assettank1,
           "../assets/objects/toontanktrab2.glb",
-          3.0,
+          1.5,
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
           tank1Material,
         );
       }
-      if (stageMatrix[i][j] === 4) {
+      if (stageMatrix[i][j] === 93) {
         loadGLBFile(
           scene,
           assettank2,
           "../assets/objects/toontanktrab2.glb",
-          3.0,
+          1.5,
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
           tank2Material,
         );
       }
-      if (stageMatrix[i][j] === 5) {
+      if (stageMatrix[i][j] === 30) {
         let cube = buildCanhao();
         cube.position.set(
           j + 1 - stageMatrix[i].length / 2,
-          -i -3 + stageMatrix.length / 2,
+          -i -2 + stageMatrix.length / 2,
           0.25,
         );
-        cube.scale.set(1.4,1.4,1.4)
+        cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
         auxCanhaoCentral = cube;
         //aux = aux+1
       }
-      if (stageMatrix[i][j] === 6) {
+      if (stageMatrix[i][j] === 26) {
         let cube = buildPoste();
         cube.position.set(
           j + 0.25 - stageMatrix[i].length / 2,
@@ -569,25 +806,25 @@ function createPlane(nivel) {
         //cube.children[0].target(targ)
         //console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
-        cube.scale.set(1.4,1.4,1.4)
+        cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
         //aux = aux+1
       }
-      if (stageMatrix[i][j] === 7) {
+      if (stageMatrix[i][j] === 27) {
         let cube = buildPoste();
         cube.position.set(
-          j + 0.75 - stageMatrix[i].length / 2,
-          -i - 0.75 + stageMatrix.length / 2,
+          j + 1.0 - stageMatrix[i].length / 2,
+          -i - 0.9 + stageMatrix.length / 2,
           0,
         );
         scene.add(targetPoste4)
         cube.children[0].target = targetPoste4
         //console.log(cube.children[0].target)
-        cube.scale.set(1.4,1.4,1.4)
+        cube.scale.set(0.7,0.7,0.7)
         
         scene.add(cube);
       }
-      if (stageMatrix[i][j] === 8) {
+      if (stageMatrix[i][j] === 28) {
         let cube = buildPoste();
         cube.position.set(
           j + 0.75 - stageMatrix[i].length / 2,
@@ -598,14 +835,14 @@ function createPlane(nivel) {
         cube.children[0].target = targetPoste2
         //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(45))
-        cube.scale.set(1.4,1.4,1.4)
+        cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
       }
-      if (stageMatrix[i][j] === 9) {
+      if (stageMatrix[i][j] === 29) {
         let cube = buildPoste();
         cube.position.set(
-          j + 0.75 - stageMatrix[i].length / 2,
-          -i - 0.25 + stageMatrix.length / 2,
+          j - 0 - stageMatrix[i].length / 2,
+          -i - 0.05 + stageMatrix.length / 2,
           0,
         );
 
@@ -614,7 +851,7 @@ function createPlane(nivel) {
         cube.children[0].target = targetPoste3
         //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(180))
-        cube.scale.set(1.4,1.4,1.4)
+        cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
 
       }
@@ -635,7 +872,7 @@ function createPlane(nivel) {
 
       }
 
-      if (stageMatrix[i][j] === 11) {
+     /*if (stageMatrix[i][j] === 11) {
         let cubegeometrywallUp = new THREE.BoxGeometry(2,2,2)
         let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
         cube.castShadow = true;
@@ -681,7 +918,7 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-      }
+      }*/
     }
   }
   return nivel
