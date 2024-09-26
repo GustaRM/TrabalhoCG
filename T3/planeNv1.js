@@ -60,6 +60,7 @@ audioLoader.load( 'imperial.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
 	sound.setVolume( 0.01 );
+  sound.play();
 });
 
 const listenerShoot = new THREE.AudioListener();
@@ -69,7 +70,17 @@ const soundShoot = new THREE.Audio( listenerShoot );
 const audioLoaderShoot = new THREE.AudioLoader();
 audioLoaderShoot.load( 'tankshot.mp3', function( buffer ) {
   soundShoot.setBuffer( buffer );
-  soundShoot.setVolume( 0.01 );
+  soundShoot.setVolume( 0.03 );
+});
+
+const listenerExplosion = new THREE.AudioListener();
+listenerExplosion.autoplay = true
+camera.add( listenerExplosion );
+const soundExplosion = new THREE.Audio( listenerExplosion );
+const audioLoaderExplosion = new THREE.AudioLoader();
+audioLoaderExplosion.load( 'explosion.mp3', function( buffer ) {
+  soundExplosion.setBuffer( buffer );
+  soundExplosion.setVolume( 0.03 );
 });
 
 
@@ -162,10 +173,16 @@ function tanksController(){
   {
     
 
-    if (assettank1.colisoes > 0)
-    projectiles.push(shoot(assettank1.object, 0.15, scene));
-    if (assettank2.colisoes > 0)
+    if (assettank1.colisoes > 0){
+      projectiles.push(shoot(assettank1.object, 0.15, scene));
+      soundShoot.stop()
+      soundShoot.play()
+    }
+    if (assettank2.colisoes > 0){
     projectiles.push(shoot(assettank2.object, 0.15, scene));
+    soundShoot.stop()
+    soundShoot.play()
+    }
     UltimoTiro = Date.now();
   }
 }
@@ -222,7 +239,9 @@ function checkProjectileCollisions() {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index];
 
-      
+      soundExplosion.stop();
+      soundExplosion.setVolume(0.1);
+      soundExplosion.play();
       scene.remove(projectile.bb);
       scene.remove(projectile);
       assetPlayer.colisoes -= 1;
@@ -234,6 +253,9 @@ function checkProjectileCollisions() {
       scene.remove(projectile.bb);
       scene.remove(projectile);
 
+      soundExplosion.stop();
+      soundExplosion.setVolume(0.05);
+      soundExplosion.play();
       assettank1.colisoes -= 1;
 
       if(assettank1.colisoes == 0)
@@ -249,6 +271,9 @@ function checkProjectileCollisions() {
       scene.remove(projectile.bb);
       scene.remove(projectile);
 
+      soundExplosion.stop();
+      soundExplosion.setVolume(0.05);
+      soundExplosion.play();
       assettank2.colisoes -= 1;
 
       if(assettank2.colisoes == 0)
@@ -419,6 +444,7 @@ function keyboardUpdate() {
   //Atira tanque 1
   if (keyboard.down("space")){
     projectiles.push(shoot(assetPlayer.object, 0.15, scene));
+    soundShoot.stop()
     soundShoot.play()
    
   }
