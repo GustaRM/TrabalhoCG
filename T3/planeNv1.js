@@ -51,6 +51,27 @@ targetPoste3.position.set(-2,2,-10)
 const targetPoste4 = new THREE.Object3D()
 targetPoste4.position.set(-2,-1,-10)
 
+const listener = new THREE.AudioListener();
+listener.autoplay = true
+camera.add( listener );
+const sound = new THREE.Audio( listener );
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'imperial.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.01 );
+});
+
+const listenerShoot = new THREE.AudioListener();
+listenerShoot.autoplay = true
+camera.add( listenerShoot );
+const soundShoot = new THREE.Audio( listenerShoot );
+const audioLoaderShoot = new THREE.AudioLoader();
+audioLoaderShoot.load( 'tankshot.mp3', function( buffer ) {
+  soundShoot.setBuffer( buffer );
+  soundShoot.setVolume( 0.01 );
+});
+
 
 window.addEventListener("resize", onWindowResize, false);
 
@@ -396,8 +417,11 @@ function keyboardUpdate() {
     assetPlayer.object.translateZ(moveSpeed);
   
   //Atira tanque 1
-  if (keyboard.down("space"))
+  if (keyboard.down("space")){
     projectiles.push(shoot(assetPlayer.object, 0.15, scene));
+    soundShoot.play()
+   
+  }
 
   //Altera mapa para nivel 1
   if (keyboard.down("1")) {
