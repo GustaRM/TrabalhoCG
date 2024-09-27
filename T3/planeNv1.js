@@ -482,6 +482,13 @@ function keyboardUpdate() {
   
     audioMode = !audioMode;
     // fazer a musica parar ou começar
+    if (audioMode == false)
+    if(sound.isPlaying == true){
+      sound.stop()
+    }
+    soundExplosion.stop();
+    soundShoot.stop();
+
   }
   if (keyboard.pressed("left") && !keyboard.pressed("A"))
     assetPlayer.object.rotateY(rotationSpeed);
@@ -499,21 +506,8 @@ function keyboardUpdate() {
     {
       soundShoot.stop()
       soundShoot.play()
-  }
-
-  //Desabilita sons
-  if (keyboard.down("P")){
-    if(sound.isPlaying == true){
-      sound.stop()
-    }else{
-      sound.play()
     }
-    soundExplosion.stop();
-    soundShoot.stop();
-     }
-   
   }
-
   //Altera mapa para nivel 1
   if (keyboard.down("1")) {
     while (scene.children.length > 0) {
