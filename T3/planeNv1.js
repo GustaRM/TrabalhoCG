@@ -14,7 +14,7 @@ import {
   getMaxSize,
 } from "../libs/util/util.js";
 import { shoot } from "./tiro.js";
-import { Color, DirectionalLight, Vector3 } from "../build/three.module.js";
+import { Color, DirectionalLight, MeshLambertMaterial, Vector3 } from "../build/three.module.js";
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
@@ -51,12 +51,14 @@ targetPoste3.position.set(-2,2,-10)
 const targetPoste4 = new THREE.Object3D()
 targetPoste4.position.set(-2,-1,-10)
 
+
+// Audios =============================================
 const listener = new THREE.AudioListener();
 listener.autoplay = true
 camera.add( listener );
 const sound = new THREE.Audio( listener );
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load( 'imperial.mp3', function( buffer ) {
+audioLoader.load( 'sons/imperial.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
 	sound.setVolume( 0.01 );
@@ -68,7 +70,7 @@ listenerShoot.autoplay = true
 camera.add( listenerShoot );
 const soundShoot = new THREE.Audio( listenerShoot );
 const audioLoaderShoot = new THREE.AudioLoader();
-audioLoaderShoot.load( 'tankshot.mp3', function( buffer ) {
+audioLoaderShoot.load( 'sons/tankshot.mp3', function( buffer ) {
   soundShoot.setBuffer( buffer );
   soundShoot.setVolume( 0.03 );
 });
@@ -78,10 +80,37 @@ listenerExplosion.autoplay = true
 camera.add( listenerExplosion );
 const soundExplosion = new THREE.Audio( listenerExplosion );
 const audioLoaderExplosion = new THREE.AudioLoader();
-audioLoaderExplosion.load( 'explosion.mp3', function( buffer ) {
+audioLoaderExplosion.load( 'sons/explosion.mp3', function( buffer ) {
   soundExplosion.setBuffer( buffer );
   soundExplosion.setVolume( 0.03 );
 });
+
+// Texturas =============================================
+
+var cubeText = new THREE.MeshLambertMaterial();
+var cubeText1 = new THREE.MeshLambertMaterial();
+var cubeText2 = new THREE.MeshLambertMaterial();
+var cubeTextFloor = new THREE.MeshLambertMaterial();
+
+const texture = new THREE.TextureLoader().load( "./assets/textures/stonewall.jpg" );
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 4, 4 );
+
+const texture1 = new THREE.TextureLoader().load( "./assets/textures/stone.jpg" );
+texture1.wrapS = THREE.RepeatWrapping;
+texture1.wrapT = THREE.RepeatWrapping;
+texture1.repeat.set( 4, 4 );
+
+const texture2 = new THREE.TextureLoader().load( "./assets/textures/floorWood.jpg" );
+texture2.wrapS = THREE.RepeatWrapping;
+texture2.wrapT = THREE.RepeatWrapping;
+texture2.repeat.set( 4, 4 );
+
+const textureFloor = new THREE.TextureLoader().load( "./assets/textures/sand.jpg" );
+textureFloor.wrapS = THREE.RepeatWrapping;
+textureFloor.wrapT = THREE.RepeatWrapping;
+textureFloor.repeat.set( 4, 4 );
 
 
 window.addEventListener("resize", onWindowResize, false);
