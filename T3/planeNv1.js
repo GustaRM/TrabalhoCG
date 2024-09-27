@@ -83,6 +83,7 @@ const audioLoaderExplosion = new THREE.AudioLoader();
 audioLoaderExplosion.load( 'sons/explosion.mp3', function( buffer ) {
   soundExplosion.setBuffer( buffer );
   soundExplosion.setVolume( 0.03 );
+  soundExplosion.detune -= 1000
 });
 
 // Texturas =============================================
@@ -475,7 +476,18 @@ function keyboardUpdate() {
     projectiles.push(shoot(assetPlayer.object, 0.15, scene));
     soundShoot.stop()
     soundShoot.play()
-   
+  }
+
+  //Desabilita sons
+  if (keyboard.down("P")){
+    if(sound.isPlaying == true){
+      sound.stop()
+    }else{
+      sound.play()
+    }
+    soundExplosion.stop();
+    soundShoot.stop();
+    
   }
 
   //Altera mapa para nivel 1
@@ -570,7 +582,7 @@ function createPlane(nivel) {
     color: "darkgrey",
     side: THREE.DoubleSide,
   });
-  const materialCube = new THREE.MeshBasicMaterial({
+  const level1WallsMaterial = new THREE.MeshBasicMaterial({
     color: 0x00af00,
     side: THREE.DoubleSide,
   });
@@ -618,7 +630,7 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 1) {
         var cubeGeometry = new THREE.BoxGeometry(17, 1, 1);
-        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -634,7 +646,7 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 11) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
-        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -650,7 +662,7 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 14) {
         var cubeGeometry = new THREE.BoxGeometry(1, 11, 1);
-        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -810,7 +822,7 @@ function createPlane(nivel) {
       /*
       if (stageMatrix[i][j] === 15) {
         var cubeGeometry = new THREE.BoxGeometry(1, 6, 1);
-        let cube = new THREE.Mesh(cubeGeometry, materialCube);
+        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
