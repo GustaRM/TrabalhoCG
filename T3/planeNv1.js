@@ -42,7 +42,7 @@ orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
 
 
-
+//direção luz poste
 const targetPoste1 = new THREE.Object3D()
 targetPoste1.position.set(-9,4,-3)
 
@@ -178,6 +178,21 @@ mapa_atual =  createPlane(3);
 render();
 
 function tanksController(){
+  if(stageLevel == 1)
+  {
+    assettank1.object.rotateZ(0.01);
+    assettank2.object.rotateZ(0.01);
+  }
+  else if (stageLevel == 3)
+  {
+  //  assettank3.object.rotateZ(0.01);
+  //  assettank4.object.rotateZ(0.01);
+  }
+  else if (stageLevel == 4) {
+  //  assettank5.object.rotateZ(0.01);
+  //  assettank6.object.rotateZ(0.01);
+  //  assettank7.object.rotateZ(0.01);
+  }
   if( Date.now() - UltimoTiro > 3000)
   {
     
@@ -213,7 +228,7 @@ function render() {
     assettank2.object != null
   ) {
     //assettank1.object.rotateX(0.01);
-    updateAsset(assetPlayer);
+    updateAsset();
     checkWallCollisions(cubes, projectiles);
     checkProjectileCollisions();
     tanksController();
@@ -334,62 +349,70 @@ function checkProjectileCollisions() {
 //Funções de colisão
 
 function updateAsset() {
-  if (assetPlayer.colisoes > 0){
-  assetPlayer.bb.copy(assetPlayer.object.position);
-  assetPlayer.bb.setFromObject(assetPlayer.object);
-  if (assetPlayer.object.children.length == 1)
-    lifeBar(assetPlayer.colisoes,assetPlayer.object)
-    
-    if (assetPlayer.colisoes != assetPlayer.object.children[1].geometry.parameters.width)
-      assetPlayer.object.remove(assetPlayer.object.children [1])
-        lifeBar(assetPlayer.colisoes,assetPlayer.object)
-  }
-  else
-  {
-    assetPlayer.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
-  }
 
-  if (assettank1.colisoes > 0){
-  assettank1.bb.copy(assettank1.object.position);
-  assettank1.bb.setFromObject(assettank1.object);
-  if (assettank1.object.children.length == 1)
-    lifeBar(assettank1.colisoes,assettank1.object)
-  if (assettank1.colisoes != assettank1.object.children[1].geometry.parameters.width)
-  {
-    assettank1.object.remove(assettank1.object.children [1])
-    lifeBar(assettank1.colisoes,assettank1.object)
-  }
-  }
-  else
-  {
-    assettank1.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
-  }
+  stageController();
+  updateTankAssets();
+  updateProjectile();
+  controllerCanhaoCental();
 
-  if (assettank2.colisoes > 0){
-  assettank2.bb.copy(assettank2.object.position);
-  assettank2.bb.setFromObject(assettank2.object);
+}
 
-  if (assettank2.object.children.length == 1)
-    lifeBar(assettank2.colisoes,assettank2.object)
-    if (assettank2.colisoes != assettank2.object.children[1].geometry.parameters.width)
-    {
-      assettank2.object.remove(assettank2.object.children [1])
-      lifeBar(assettank2.colisoes,assettank2.object)
-    }  
-  }
-  else
-  {
-    assettank2.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
-  }
-
+function updateProjectile() {
   projectiles.forEach((projectile) => {
     projectile.bb.setFromObject(projectile)
     //console.log(projectile.bb);
-  });
+  })};
 
-  movCanhaoCentral();
-}
 
+  function updateTankAssets() {
+    if (assetPlayer.colisoes > 0){
+      assetPlayer.bb.copy(assetPlayer.object.position);
+      assetPlayer.bb.setFromObject(assetPlayer.object);
+      if (assetPlayer.object.children.length == 1)
+        lifeBar(assetPlayer.colisoes,assetPlayer.object)
+        
+        if (assetPlayer.colisoes != assetPlayer.object.children[1].geometry.parameters.width)
+          assetPlayer.object.remove(assetPlayer.object.children [1])
+            lifeBar(assetPlayer.colisoes,assetPlayer.object)
+      }
+      else
+      {
+        assetPlayer.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+      }
+    
+      if (assettank1.colisoes > 0){
+      assettank1.bb.copy(assettank1.object.position);
+      assettank1.bb.setFromObject(assettank1.object);
+      if (assettank1.object.children.length == 1)
+        lifeBar(assettank1.colisoes,assettank1.object)
+      if (assettank1.colisoes != assettank1.object.children[1].geometry.parameters.width)
+      {
+        assettank1.object.remove(assettank1.object.children [1])
+        lifeBar(assettank1.colisoes,assettank1.object)
+      }
+      }
+      else
+      {
+        assettank1.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+      }
+    
+      if (assettank2.colisoes > 0){
+      assettank2.bb.copy(assettank2.object.position);
+      assettank2.bb.setFromObject(assettank2.object);
+    
+      if (assettank2.object.children.length == 1)
+        lifeBar(assettank2.colisoes,assettank2.object)
+        if (assettank2.colisoes != assettank2.object.children[1].geometry.parameters.width)
+        {
+          assettank2.object.remove(assettank2.object.children [1])
+          lifeBar(assettank2.colisoes,assettank2.object)
+        }  
+      }
+      else
+      {
+        assettank2.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+      }
+  }
 function lifeBar(vida,objeto)
 {
   let materialLife = new THREE.MeshPhongMaterial({ color: "red" });
@@ -432,6 +455,36 @@ function checkWallCollisions(cubes) {
       }
     });
   });
+  (movingwalls || []).forEach((wallmov) => {
+    collisionP1 = assetPlayer.bb.intersectsBox(wallmov.bb);
+    collisionP2 = assettank1.bb.intersectsBox(wallmov.bb);
+    collisionP3 = assettank2.bb.intersectsBox(wallmov.bb);
+    if (collisionP1) {
+      checkColisionSideTank(assetPlayer, wallmov);
+      infoBox.changeMessage("Collision detected Player");
+    }
+    if (collisionP2) {
+      checkColisionSideTank(assettank1, wallmov);
+      infoBox.changeMessage("Collision detected tank1");
+    }
+
+    if (collisionP3) {
+      checkColisionSideTank(assettank2, wallmov);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+
+    projectiles.forEach((projectile) => {
+      if (projectile.bb.intersectsBox(wallmov.bb)) {
+        colisao(projectile, wallmov);
+
+        if (projectile.colisoes >= 3) {
+          projectiles.splice(projectiles.indexOf(projectile), 1);
+          scene.remove(projectile);
+          scene.remove(projectile.bb);
+        }
+      }
+    });
+  });
 }
 
 function getTankDirection(tank) {
@@ -443,7 +496,7 @@ function getTankDirection(tank) {
   return direction;
 }
 
-function movCanhaoCentral()
+function controllerCanhaoCental()
 {
   auxCanhaoCentral.rotateZ(0.01);
   
@@ -454,7 +507,7 @@ function movCanhaoCentral()
 function keyboardUpdate() {
   var keyboard = new KeyboardState();
   keyboard.update();
-  if (keyboard.pressed("Q")) console.log(auxCanhaoCentral);
+  if (keyboard.pressed("Q")) console.log(assetPlayer.object.position);
   if (keyboard.pressed("A")) {assetPlayer.object.rotateY(rotationSpeed)};
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
@@ -600,7 +653,19 @@ function calcDistancia(asset1, asset2) {
 //Função para iniciar o nível
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
+
+  if (nivel == 1) {
+    stageLevel = 1;
+  }
+  if (nivel == 2) {
+    stageLevel = 3;
+  }
+  if (nivel == 3) {
+    stageLevel = 5;
+  }
+
   const stageMatrix = stageSelector(nivel);
+  movingwalls = []
   cubes = []
   assetPlayer.colisoes = 10
   assettank1.colisoes = 10
@@ -635,15 +700,15 @@ function createPlane(nivel) {
   directionalLight.target.position.set(0, 0, 0); // Where the light should point
   directionalLight.castShadow = true; 
   directionalLight.shadow.camera.left = -140;  // Extend left boundary
-directionalLight.shadow.camera.right = 140;  // Extend right boundary
-directionalLight.shadow.camera.top = 140;    // Extend top boundary
-directionalLight.shadow.camera.bottom = -140; // Extend bottom boundary
-directionalLight.shadow.mapSize.width = 8192; // Default is 512
-directionalLight.shadow.mapSize.height = 8192;
+  directionalLight.shadow.camera.right = 140;  // Extend right boundary
+  directionalLight.shadow.camera.top = 140;    // Extend top boundary
+  directionalLight.shadow.camera.bottom = -140; // Extend bottom boundary
+  directionalLight.shadow.mapSize.width = 8192; // Default is 512
+  directionalLight.shadow.mapSize.height = 8192;
 
-// Optional: Adjust near and far planes of the shadow camera
-directionalLight.shadow.camera.near = 0.5;
-directionalLight.shadow.camera.far = 60;
+  // Optional: Adjust near and far planes of the shadow camera
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 60;
 
   // Add the light to the scene
   scene.add(directionalLight);
@@ -666,7 +731,7 @@ directionalLight.shadow.camera.far = 60;
 
   for (var i = 0; i < stageMatrix.length; i++) {
     for (var j = 0; j < stageMatrix[i].length; j++) {
-      // Coloca todos os cubos no plano
+      // Coloca todos os componentes da fase
       
       if (stageMatrix[i][j] === 4) {
         var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
@@ -1071,6 +1136,57 @@ directionalLight.shadow.camera.far = 60;
           tank2Material,
         );
       }
+      if (stageMatrix[i][j] === 94) {
+        loadGLBFile(
+          scene,
+          assettank3,
+          "../assets/objects/toontanktrab2.glb",
+          1.5,
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          tank1Material,
+        );
+      }if (stageMatrix[i][j] === 95) {
+        loadGLBFile(
+          scene,
+          assettank4,
+          "../assets/objects/toontanktrab2.glb",
+          1.5,
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          tank1Material,
+        );
+      }if (stageMatrix[i][j] === 96) {
+        loadGLBFile(
+          scene,
+          assettank5,
+          "../assets/objects/toontanktrab2.glb",
+          1.5,
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          tank1Material,
+        );
+      }if (stageMatrix[i][j] === 97) {
+        loadGLBFile(
+          scene,
+          assettank6,
+          "../assets/objects/toontanktrab2.glb",
+          1.5,
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          tank1Material,
+        );
+      }if (stageMatrix[i][j] === 98) {
+        loadGLBFile(
+          scene,
+          assettank7,
+          "../assets/objects/toontanktrab2.glb",
+          1.5,
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          tank1Material,
+        );
+      }
       if (stageMatrix[i][j] === 30) {
         let cube = buildCanhao();
         cube.castShadow = true;
@@ -1170,52 +1286,76 @@ directionalLight.shadow.camera.far = 60;
   return nivel
 }
 
-function stageController(){
-  if (stageLevel == 1){
-    if (assettank1.colisoes < 1){
-        stageLevel = 2
-
-        //codigo pros portoes abrirem
-
+function gateMovement(gate,up){
+  if (stageLevel == 2){
+    
+    if (up){
+      if (gate.object.position.y < 1)
+        gate.object.position.y += 0.01
     }
-  }
-  if(assetPlayer.position.x > 10){
-    stageLevel = 3
-
-    // codigo para fechar portoes fase 1 e abrir portoes da fase 2
-  }
-  if (stage == 2){
-    if (assetPlayer.position.x > 15){
-      stageLevel = 3
-
-      //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
-
-    }
-  }
-  if (stage == 3){
-    if (assettank2.colisoes < 1){
-      if(assettank3.colisoes < 1){
-        stageLevel = 4
-        //codigo para abrir portoes da fase 2 para a 3
+    if (!up){
+      if (gate.object.position.y < -1.5){
+        gate.object.position.y -= 0.01
       }
     }
   }
-  if (stageLevel == 4){
-    if (assetPlayer.position.x > 20){
-      stageLevel = 5
-      //codigo para abrir portoes da fase 3
 
+}
+
+function stageController(){
+  if( assetPlayer.object != null){
+
+    if (stageLevel == 1){
+      if (assettank1.colisoes < 1){
+          stageLevel = 2
+  
+          //codigo pros portoes abrirem
+  
+      }
     }
-  }
-  if (stageLevel == 5){
-    if (assettank4.colisoes < 1){
-      if(assettank5.colisoes < 1){
-        if(assettank6.colisoes < 1){
-          
-          stageLevel = 6
-          //codigo para colocar a tela de vitoria
+    if(assetPlayer.object.position.x > -13.5){
+      stageLevel = 3
+  
+      // codigo para fechar portoes fase 1 e abrir portoes da fase 2
+    }
+    if (stageLevel == 2){
+      if (assetPlayer.position.x > -9.5) {
+        stageLevel = 3
+  
+        //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
+  
+      }
+    }
+    if (stageLevel == 3){
+      if (assettank2.colisoes < 1){
+        if(assettank3.colisoes < 1){
+          stageLevel = 4
+          //codigo para abrir portoes da fase 2 para a 3
         }
       }
+    }
+    if (stageLevel == 4){
+      if (assetPlayer.position.x > 7.3){
+        stageLevel = 5
+        //codigo para abrir portoes da fase 3
+  
+      }
+    }
+    if (stageLevel == 5){
+      if(assetPlayer.object.position.x > 11.5)
+      stageLevel = 6
+      
+    }
+    if (stageLevel == 6){
+      if (assettank4.colisoes < 1){
+        if(assettank5.colisoes < 1){
+          if(assettank6.colisoes < 1){
+            
+            //codigo para colocar a tela de vitoria
+          }
+        }
+      }
+      //codigo para voltar para o menu
     }
   }
 
