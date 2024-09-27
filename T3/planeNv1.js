@@ -116,7 +116,7 @@ let movingwalls = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
 var godMode = false
-var audioMode = false
+var audioMode = true
 
 let assetPlayer = {
   object: null,
