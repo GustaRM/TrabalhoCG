@@ -19,7 +19,7 @@ import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.j
 import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
 let UltimoTiro = Date.now();
-
+let stageLevel = 1;
 let scene,
   renderer,
   camera,
@@ -40,6 +40,9 @@ initialCameraPosition = camera.position.clone();
 orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
+
+
+
 const targetPoste1 = new THREE.Object3D()
 targetPoste1.position.set(-9,4,-3)
 
@@ -138,6 +141,8 @@ let cubes = [];
 let projectiles = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
+var godMode = false
+var audioMode = false
 
 let assetPlayer = {
   object: null,
@@ -268,13 +273,18 @@ function checkProjectileCollisions() {
     if (projectile.bb.intersectsBox(assetPlayer.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index];
-
-      soundExplosion.stop();
-      soundExplosion.setVolume(0.1);
-      soundExplosion.play();
+      if (audioMode == true )
+      {
+        soundExplosion.stop();
+        soundExplosion.setVolume(0.1);
+        soundExplosion.play();
+      }
       scene.remove(projectile.bb);
       scene.remove(projectile);
-      assetPlayer.colisoes -= 1;
+      if (godMode == false)
+      {
+        assetPlayer.colisoes -= 1;
+      }
       //console.log("sucesso")
     }
     
@@ -282,10 +292,12 @@ function checkProjectileCollisions() {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       scene.remove(projectile.bb);
       scene.remove(projectile);
-
-      soundExplosion.stop();
-      soundExplosion.setVolume(0.05);
-      soundExplosion.play();
+      if (audioMode == true )
+      {
+        soundExplosion.stop();
+        soundExplosion.setVolume(0.05);
+        soundExplosion.play();
+      }
       assettank1.colisoes -= 1;
 
       if(assettank1.colisoes == 0)
@@ -300,10 +312,12 @@ function checkProjectileCollisions() {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       scene.remove(projectile.bb);
       scene.remove(projectile);
-
-      soundExplosion.stop();
-      soundExplosion.setVolume(0.05);
-      soundExplosion.play();
+      if (audioMode == true )
+      {
+        soundExplosion.stop();
+        soundExplosion.setVolume(0.05);
+        soundExplosion.play();
+      }
       assettank2.colisoes -= 1;
 
       if(assettank2.colisoes == 0)
@@ -462,6 +476,13 @@ function keyboardUpdate() {
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
   if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
+  if (keyboard.down("G")) godMode = !godMode;
+  if (keyboard.down("P")) 
+  {
+  
+    audioMode = !audioMode;
+    // fazer a musica parar ou começar
+  }
   if (keyboard.pressed("left") && !keyboard.pressed("A"))
     assetPlayer.object.rotateY(rotationSpeed);
   if (keyboard.pressed("right") && !keyboard.pressed("D"))
@@ -474,8 +495,10 @@ function keyboardUpdate() {
   //Atira tanque 1
   if (keyboard.down("space")){
     projectiles.push(shoot(assetPlayer.object, 0.15, scene));
-    soundShoot.stop()
-    soundShoot.play()
+    if (audioMode == true )
+    {
+      soundShoot.stop()
+      soundShoot.play()
   }
 
   //Desabilita sons
@@ -487,7 +510,8 @@ function keyboardUpdate() {
     }
     soundExplosion.stop();
     soundShoot.stop();
-    
+     }
+   
   }
 
   //Altera mapa para nivel 1
@@ -526,12 +550,20 @@ function keyboardUpdate() {
   
   //Mantem a camera olhando sempre para o ponto medio
   if (!isOrbitEnabled) {
-    camera.position.set(
-      midpoint.x,
-      midpoint.y - 10,
-      10 + DistanciaPlayers + 15 / 3 + (0.5 / window.innerWidth),
-    );
-    camera.lookAt(midpoint);
+    if (assetPlayer.object != null){
+
+      camera.position.set(
+        assetPlayer.object.position.x,
+        assetPlayer.object.position.y-10,
+        17,
+      );
+      camera.lookAt(assetPlayer.object.position);
+    }
+    else
+    {
+      camera.position.set(0,0,17);
+      camera.lookAt(0,0,0);
+    }
   }
 }
 
@@ -556,8 +588,6 @@ function calcularDistanciaPlayers() {
 function calcDistancia(asset1, asset2) {
   return asset1.object.position.distanceTo(asset2.object.position);
 }
-
-
 
 //Função para iniciar o nível
 function createPlane(nivel) {
@@ -1013,4 +1043,55 @@ function createPlane(nivel) {
     }
   }
   return nivel
+}
+
+function stageController(){
+  if (stageLevel == 1){
+    if (assettank1.colisoes < 1){
+        stageLevel = 2
+
+        //codigo pros portoes abrirem
+
+    }
+  }
+  if(assetPlayer.position.x > 10){
+    stageLevel = 3
+
+    // codigo para fechar portoes fase 1 e abrir portoes da fase 2
+  }
+  if (stage == 2){
+    if (assetPlayer.position.x > 15){
+      stageLevel = 3
+
+      //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
+
+    }
+  }
+  if (stage == 3){
+    if (assettank2.colisoes < 1){
+      if(assettank3.colisoes < 1){
+        stageLevel = 4
+        //codigo para abrir portoes da fase 2 para a 3
+      }
+    }
+  }
+  if (stageLevel == 4){
+    if (assetPlayer.position.x > 20){
+      stageLevel = 5
+      //codigo para abrir portoes da fase 3
+
+    }
+  }
+  if (stageLevel == 5){
+    if (assettank4.colisoes < 1){
+      if(assettank5.colisoes < 1){
+        if(assettank6.colisoes < 1){
+          
+          stageLevel = 6
+          //codigo para colocar a tela de vitoria
+        }
+      }
+    }
+  }
+
 }
