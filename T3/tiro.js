@@ -8,7 +8,7 @@ function createBBHelper(bb, color, scene) {
 }
 
 export function shoot(tank, speed, scene) {
-  const projectileGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+  const projectileGeometry = new THREE.SphereGeometry(0.15, 4, 4);
   const projectileMaterial = new THREE.MeshPhongMaterial({ color: 0xff1493 });
 
   let projectile = new THREE.Mesh(projectileGeometry, projectileMaterial);
@@ -17,9 +17,9 @@ export function shoot(tank, speed, scene) {
 
   const projectileDirection = getTankDirection(tank);
   projectile.position.copy(tank.position);
-  projectile.position.x = projectile.position.x + projectileDirection.x * 2.4;
-  projectile.position.y = projectile.position.y + projectileDirection.y * 2.4;
-  projectile.position.z = 1.1;
+  projectile.position.x = projectile.position.x + projectileDirection.x * 1.2;
+  projectile.position.y = projectile.position.y + projectileDirection.y * 1.2;
+  projectile.position.z = 0.6;
   //bbHelper3.position.copy(projectile.position);
   let bb = new THREE.Box3().setFromObject(projectile);
   //projectile.add(bbHelper3);

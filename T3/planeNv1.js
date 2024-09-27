@@ -620,6 +620,30 @@ function createPlane(nivel) {
     side: THREE.DoubleSide,
   });
 
+  // Create a directional light
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // Color and intensity
+
+  // Set the position of the light
+  directionalLight.position.set(-10, 10, 7); // x, y, z coordinates
+
+  // Optionally, you can also set the direction of the light
+  directionalLight.target.position.set(0, 0, 0); // Where the light should point
+  directionalLight.castShadow = true; 
+  directionalLight.shadow.camera.left = -10;  // Extend left boundary
+directionalLight.shadow.camera.right = 10;  // Extend right boundary
+directionalLight.shadow.camera.top = 14;    // Extend top boundary
+directionalLight.shadow.camera.bottom = -10; // Extend bottom boundary
+
+// Optional: Adjust near and far planes of the shadow camera
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 100;
+
+  // Add the light to the scene
+  scene.add(directionalLight);
+
+  // Optionally, add the target object to the scene (if you want to control the direction)
+  scene.add(directionalLight.target);
+
   const texture = new THREE.TextureLoader().load( 'texturas/floorWood.jpg' );
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
@@ -667,6 +691,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j +0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -689,6 +714,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -711,6 +737,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -733,6 +760,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -756,6 +784,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -777,6 +806,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -798,6 +828,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -820,6 +851,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 1 - stageMatrix[i].length / 2,
           -i - 1 + stageMatrix.length / 2,
@@ -846,6 +878,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j  - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -867,6 +900,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -888,6 +922,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -909,6 +944,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -930,6 +966,7 @@ function createPlane(nivel) {
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -996,6 +1033,7 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 30) {
         let cube = buildCanhao();
+        cube.castShadow = true;
         cube.position.set(
           j + 1 - stageMatrix[i].length / 2,
           -i -2 + stageMatrix.length / 2,
@@ -1021,6 +1059,7 @@ function createPlane(nivel) {
         //console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
         cube.scale.set(0.7,0.7,0.7)
+        cube.castShadow = true;
         scene.add(cube);
         //aux = aux+1
       }
@@ -1031,6 +1070,7 @@ function createPlane(nivel) {
           -i - 0.9 + stageMatrix.length / 2,
           0,
         );
+        cube.castShadow = true;
         scene.add(targetPoste4)
         cube.children[0].target = targetPoste4
         //console.log(cube.children[0].target)
@@ -1050,6 +1090,7 @@ function createPlane(nivel) {
         //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(45))
         cube.scale.set(0.7,0.7,0.7)
+        cube.castShadow = true;
         scene.add(cube);
       }
       if (stageMatrix[i][j] === 29) {
