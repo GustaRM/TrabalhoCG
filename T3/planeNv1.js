@@ -90,13 +90,13 @@ audioLoaderExplosion.load( 'sons/explosion.mp3', function( buffer ) {
 });
 
 // Texturas =============================================
+/*
+// var cubeText = new THREE.MeshLambertMaterial();
+// var cubeText1 = new THREE.MeshLambertMaterial();
+// var cubeText2 = new THREE.MeshLambertMaterial();
+// var cubeTextFloor = new THREE.MeshLambertMaterial();
 
-var cubeText = new THREE.MeshLambertMaterial();
-var cubeText1 = new THREE.MeshLambertMaterial();
-var cubeText2 = new THREE.MeshLambertMaterial();
-var cubeTextFloor = new THREE.MeshLambertMaterial();
-
-const texture = new THREE.TextureLoader().load( "./assets/textures/stonewall.jpg" );
+ const texture = new THREE.TextureLoader().load( "./assets/textures/stonewall.jpg" );
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set( 4, 4 );
@@ -115,7 +115,7 @@ const textureFloor = new THREE.TextureLoader().load( "./assets/textures/sand.jpg
 textureFloor.wrapS = THREE.RepeatWrapping;
 textureFloor.wrapT = THREE.RepeatWrapping;
 textureFloor.repeat.set( 4, 4 );
-
+*/
 
 window.addEventListener("resize", onWindowResize, false);
 
@@ -210,13 +210,19 @@ function tanksController(){
 
     if (assettank1.colisoes > 0){
       projectiles.push(shoot(assettank1.object, 0.15, scene));
-      soundShoot.stop()
-      soundShoot.play()
+      if (audioMode == true){
+        soundShoot.stop()
+        soundShoot.play()
+       
+      }
     }
     if (assettank2.colisoes > 0){
     projectiles.push(shoot(assettank2.object, 0.15, scene));
-    soundShoot.stop()
-    soundShoot.play()
+    if (audioMode == true){
+      soundShoot.stop()
+      soundShoot.play()
+      
+    }
     }
     UltimoTiro = Date.now();
   }
@@ -273,14 +279,17 @@ function checkProjectileCollisions() {
     if (projectile.bb.intersectsBox(assetPlayer.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index];
+
       if (audioMode == true )
       {
         soundExplosion.stop();
         soundExplosion.setVolume(0.1);
         soundExplosion.play();
       }
+      
       scene.remove(projectile.bb);
       scene.remove(projectile);
+      
       if (godMode == false)
       {
         assetPlayer.colisoes -= 1;
@@ -479,16 +488,17 @@ function keyboardUpdate() {
   if (keyboard.down("G")) godMode = !godMode;
   if (keyboard.down("P")) 
   {
-  
+   
     audioMode = !audioMode;
+    console.log(audioMode)
     // fazer a musica parar ou começar
-    if (audioMode == false)
-    if(sound.isPlaying == true){
-      sound.stop()
+    if (audioMode == false){
+      if(sound.isPlaying == true){
+        sound.stop()
+      }
+      soundExplosion.stop();
+      soundShoot.stop();
     }
-    soundExplosion.stop();
-    soundShoot.stop();
-
   }
   if (keyboard.pressed("left") && !keyboard.pressed("A"))
     assetPlayer.object.rotateY(rotationSpeed);
@@ -610,7 +620,14 @@ function createPlane(nivel) {
     color: 0x00af00,
     side: THREE.DoubleSide,
   });
-  const plane = new THREE.Mesh(geometry, material);
+
+  const texture = new THREE.TextureLoader().load( 'texturas/floorWood.jpg' );
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set( stageMatrix[1].length, stageMatrix.length );
+  const cubeText =  new THREE.MeshLambertMaterial();
+  cubeText.map = texture;
+  const plane = new THREE.Mesh(geometry, cubeText);
   plane.receiveShadow = true;
   scene.add(plane);
 
@@ -623,7 +640,13 @@ function createPlane(nivel) {
       
       if (stageMatrix[i][j] === 4) {
         var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
-        let cube = new THREE.Mesh(cubeGeometry, levelConectorMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/grass.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 5 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -638,7 +661,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 7 || stageMatrix[i][j] === 6) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
-        let cube = new THREE.Mesh(cubeGeometry, sliderMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 3 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j +0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -654,7 +683,13 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 1) {
         var cubeGeometry = new THREE.BoxGeometry(17, 1, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stone.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 17, 1 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -670,7 +705,13 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 11) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stone.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 3 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -686,7 +727,13 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 14) {
         var cubeGeometry = new THREE.BoxGeometry(1, 11, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stone.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 11 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -703,7 +750,13 @@ function createPlane(nivel) {
       //stage 2 Walls
       if (stageMatrix[i][j] === 20) {
         var cubeGeometry = new THREE.BoxGeometry(18, 1, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/crate.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 18, 1 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -718,7 +771,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 21) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/crate.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 3 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -733,7 +792,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 22) {
         var cubeGeometry = new THREE.BoxGeometry(1, 4, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/crate.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 4 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -749,7 +814,13 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 5) {
         var cubeGeometry = new THREE.BoxGeometry(2, 2, 0.25);
-        let cube = new THREE.Mesh(cubeGeometry, level2WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/crate.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 2, 2 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 1 - stageMatrix[i].length / 2,
           -i - 1 + stageMatrix.length / 2,
@@ -760,7 +831,6 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
 
 
@@ -770,7 +840,13 @@ function createPlane(nivel) {
 
       if (stageMatrix[i][j] === 32) {
         var cubeGeometry = new THREE.BoxGeometry(22, 1, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 22, 1 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j  - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -785,7 +861,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 31) {
         var cubeGeometry = new THREE.BoxGeometry(1, 15, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 15 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -800,7 +882,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 33) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 3 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -815,7 +903,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 34) {
         var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level3WallsMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 5 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -830,7 +924,13 @@ function createPlane(nivel) {
       }
       if (stageMatrix[i][j] === 41) {
         var cubeGeometry = new THREE.BoxGeometry(3, 1, 1);
-        let cube = new THREE.Mesh(cubeGeometry, levelConectorMaterial);
+        const texture = new THREE.TextureLoader().load( 'texturas/grass.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 3, 1 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -984,56 +1084,7 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-
       }
-
-     /*if (stageMatrix[i][j] === 11) {
-        let cubegeometrywallUp = new THREE.BoxGeometry(2,2,2)
-        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
-        cube.castShadow = true;
-        cube.position.set(
-          j + 0.5 - stageMatrix[i].length / 2,
-          -i - 0.5 + stageMatrix.length / 2,
-          -0.9,
-        );
-        cubes.push({
-          object: cube,
-          bb: new THREE.Box3().setFromObject(cube),
-        });
-        scene.add(cube);
-      }
-
-      if (stageMatrix[i][j] === 12) {
-        let cubegeometrywallUp = new THREE.BoxGeometry(1,21,1)
-        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
-        cube.castShadow = true;
-        cube.position.set(
-          j + 0.5 - stageMatrix[i].length / 2,
-          -i - 0.5 + stageMatrix.length / 2,
-          0.49,
-        );
-        cubes.push({
-          object: cube,
-          bb: new THREE.Box3().setFromObject(cube),
-        });
-        scene.add(cube);
-      }
-
-      if (stageMatrix[i][j] === 13) {
-        let cubegeometrywallUp = new THREE.BoxGeometry(1,8,1)
-        let cube = new THREE.Mesh(cubegeometrywallUp, level2WallsMaterial);
-        cube.castShadow = true;
-        cube.position.set(
-          j + 0.5 - stageMatrix[i].length / 2,
-          -i - 0.5 + stageMatrix.length / 2,
-          0.49,
-        );
-        cubes.push({
-          object: cube,
-          bb: new THREE.Box3().setFromObject(cube),
-        });
-        scene.add(cube);
-      }*/
     }
   }
   return nivel
