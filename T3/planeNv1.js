@@ -89,33 +89,6 @@ audioLoaderExplosion.load( 'sons/explosion.mp3', function( buffer ) {
   soundExplosion.detune -= 1000
 });
 
-// Texturas =============================================
-/*
-// var cubeText = new THREE.MeshLambertMaterial();
-// var cubeText1 = new THREE.MeshLambertMaterial();
-// var cubeText2 = new THREE.MeshLambertMaterial();
-// var cubeTextFloor = new THREE.MeshLambertMaterial();
-
- const texture = new THREE.TextureLoader().load( "./assets/textures/stonewall.jpg" );
-texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 4, 4 );
-
-const texture1 = new THREE.TextureLoader().load( "./assets/textures/stone.jpg" );
-texture1.wrapS = THREE.RepeatWrapping;
-texture1.wrapT = THREE.RepeatWrapping;
-texture1.repeat.set( 4, 4 );
-
-const texture2 = new THREE.TextureLoader().load( "./assets/textures/floorWood.jpg" );
-texture2.wrapS = THREE.RepeatWrapping;
-texture2.wrapT = THREE.RepeatWrapping;
-texture2.repeat.set( 4, 4 );
-
-const textureFloor = new THREE.TextureLoader().load( "./assets/textures/sand.jpg" );
-textureFloor.wrapS = THREE.RepeatWrapping;
-textureFloor.wrapT = THREE.RepeatWrapping;
-textureFloor.repeat.set( 4, 4 );
-*/
 
 window.addEventListener("resize", onWindowResize, false);
 
@@ -139,6 +112,7 @@ const levelConectorMaterial = new THREE.MeshLambertMaterial({color: "red"})
 const sliderMaterial = new THREE.MeshLambertMaterial({color: "yellow"})
 let cubes = [];
 let projectiles = [];
+let movingwalls = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
 var godMode = false
@@ -485,20 +459,51 @@ function keyboardUpdate() {
   if (keyboard.pressed("D")) assetPlayer.object.rotateY(-rotationSpeed);
   if (keyboard.pressed("S")) assetPlayer.object.translateZ(-moveSpeed);
   if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
-  if (keyboard.down("G")) godMode = !godMode;
-  if (keyboard.down("P")) 
-    {
-      audioMode = !audioMode;
-      if (audioMode == false){
-        if(sound.isPlaying == true){
-          sound.stop()
-        }
-        soundExplosion.stop();
-        soundShoot.stop();
-      }
-      if (audioMode == true)
-        sound.play()
+  if (keyboard.down("G")) {
+    godMode = !godMode;
+    if (godMode == true)
+      {
+        const auxColor = new THREE.Color("white");
+        assetPlayer.object.traverse(function (child) {
+          if (child.name.includes("Tank") && !child.name.includes("Root")) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            
+            if (child.material) { // Check if the child has a material
+              child.material.color.set(auxColor); // Change the color of the existing material
+            }
+          }
+        });
     }
+    else 
+    {
+      const auxColor = new THREE.Color("green");
+        assetPlayer.object.traverse(function (child) {
+          if (child.name.includes("Tank") && !child.name.includes("Root")) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+            
+            if (child.material) { // Check if the child has a material
+              child.material.color.set(auxColor); // Change the color of the existing material
+            }
+          }
+        });
+    }
+  
+  }
+  if (keyboard.down("P")) 
+  {
+    audioMode = !audioMode;
+    if (audioMode == false){
+      if(sound.isPlaying == true){
+        sound.stop()
+      }
+      soundExplosion.stop();
+      soundShoot.stop();
+    }
+    if (audioMode == true)
+      sound.play()
+  }
   if (keyboard.pressed("left") && !keyboard.pressed("A"))
     assetPlayer.object.rotateY(rotationSpeed);
   if (keyboard.pressed("right") && !keyboard.pressed("D"))
@@ -635,8 +640,7 @@ directionalLight.shadow.camera.top = 140;    // Extend top boundary
 directionalLight.shadow.camera.bottom = -140; // Extend bottom boundary
 directionalLight.shadow.mapSize.width = 8192; // Default is 512
 directionalLight.shadow.mapSize.height = 8192;
-const helper = new THREE.CameraHelper( directionalLight.shadow.camera );
-scene.add(helper)
+
 // Optional: Adjust near and far planes of the shadow camera
 directionalLight.shadow.camera.near = 0.5;
 directionalLight.shadow.camera.far = 60;
@@ -673,6 +677,7 @@ directionalLight.shadow.camera.far = 60;
         const cubeText =  new THREE.MeshLambertMaterial();
         cubeText.map = texture;
         let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
         cube.position.set(
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
@@ -700,10 +705,20 @@ directionalLight.shadow.camera.far = 60;
           -i - 0.5 + stageMatrix.length / 2,
           0.49,
         );
-        cubes.push({
+        if (stageMatrix[i][j] === 6){
+          
+        movingwalls.push({
           object: cube,
           bb: new THREE.Box3().setFromObject(cube),
-        });
+          tipo: 1
+        })}
+        else {
+          movingwalls.push({
+            object: cube,
+            bb: new THREE.Box3().setFromObject(cube),
+            tipo: 2
+          });
+        }
         scene.add(cube);
         //aux = aux+1
       }
@@ -940,6 +955,28 @@ directionalLight.shadow.camera.far = 60;
       }
       if (stageMatrix[i][j] === 34) {
         var cubeGeometry = new THREE.BoxGeometry(1, 5, 1);
+        const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 5 );
+        const cubeText =  new THREE.MeshLambertMaterial();
+        cubeText.map = texture;
+        let cube = new THREE.Mesh(cubeGeometry, cubeText);
+        cube.castShadow = true;
+        cube.position.set(
+          j + 0.5 - stageMatrix[i].length / 2,
+          -i - 0.5 + stageMatrix.length / 2,
+          0.49,
+        );
+        cubes.push({
+          object: cube,
+          bb: new THREE.Box3().setFromObject(cube),
+        });
+        scene.add(cube);
+        //aux = aux+1
+      }
+      if (stageMatrix[i][j] === 35) {
+        var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
         const texture = new THREE.TextureLoader().load( 'texturas/stonewall.jpg' );
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
