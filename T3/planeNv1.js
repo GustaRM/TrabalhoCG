@@ -624,19 +624,22 @@ function createPlane(nivel) {
   const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // Color and intensity
 
   // Set the position of the light
-  directionalLight.position.set(-10, 10, 7); // x, y, z coordinates
+  directionalLight.position.set(-15, 17, 20); // x, y, z coordinates
 
   // Optionally, you can also set the direction of the light
   directionalLight.target.position.set(0, 0, 0); // Where the light should point
   directionalLight.castShadow = true; 
-  directionalLight.shadow.camera.left = -10;  // Extend left boundary
-directionalLight.shadow.camera.right = 10;  // Extend right boundary
-directionalLight.shadow.camera.top = 14;    // Extend top boundary
-directionalLight.shadow.camera.bottom = -10; // Extend bottom boundary
-
+  directionalLight.shadow.camera.left = -140;  // Extend left boundary
+directionalLight.shadow.camera.right = 140;  // Extend right boundary
+directionalLight.shadow.camera.top = 140;    // Extend top boundary
+directionalLight.shadow.camera.bottom = -140; // Extend bottom boundary
+directionalLight.shadow.mapSize.width = 8192; // Default is 512
+directionalLight.shadow.mapSize.height = 8192;
+const helper = new THREE.CameraHelper( directionalLight.shadow.camera );
+scene.add(helper)
 // Optional: Adjust near and far planes of the shadow camera
 directionalLight.shadow.camera.near = 0.5;
-directionalLight.shadow.camera.far = 100;
+directionalLight.shadow.camera.far = 60;
 
   // Add the light to the scene
   scene.add(directionalLight);
