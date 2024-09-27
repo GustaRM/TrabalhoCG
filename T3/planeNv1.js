@@ -487,19 +487,18 @@ function keyboardUpdate() {
   if (keyboard.pressed("W")) assetPlayer.object.translateZ(moveSpeed);
   if (keyboard.down("G")) godMode = !godMode;
   if (keyboard.down("P")) 
-  {
-   
-    audioMode = !audioMode;
-    console.log(audioMode)
-    // fazer a musica parar ou começar
-    if (audioMode == false){
-      if(sound.isPlaying == true){
-        sound.stop()
+    {
+      audioMode = !audioMode;
+      if (audioMode == false){
+        if(sound.isPlaying == true){
+          sound.stop()
+        }
+        soundExplosion.stop();
+        soundShoot.stop();
       }
-      soundExplosion.stop();
-      soundShoot.stop();
+      if (audioMode == true)
+        sound.play()
     }
-  }
   if (keyboard.pressed("left") && !keyboard.pressed("A"))
     assetPlayer.object.rotateY(rotationSpeed);
   if (keyboard.pressed("right") && !keyboard.pressed("D"))
