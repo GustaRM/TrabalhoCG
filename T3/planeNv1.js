@@ -55,6 +55,21 @@ const targetPoste4 = new THREE.Object3D()
 targetPoste4.position.set(-2,-1,-10)
 
 
+//chase logic 
+function chaseObject(chaser, target, speed = 0.05, distance) {
+  // Calculate direction vector
+  const direction = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
+  
+  // Normalize the direction vector (convert to unit vector)
+  direction.normalize();
+  
+  // Move the chaser in the direction of the target
+  chaser.object.position.add(direction.multiplyScalar(speed));
+  
+  // Optional: Make the chaser look at the target
+  chaser.object.lookAt(target.object.position);
+}
+
 // Audios =============================================
 const listener = new THREE.AudioListener();
 listener.autoplay = true
@@ -114,6 +129,7 @@ const sliderMaterial = new THREE.MeshLambertMaterial({color: "yellow"})
 let cubes = [];
 let projectiles = [];
 let movingwalls = [];
+let gates = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
 var godMode = false
@@ -175,7 +191,7 @@ const C = 98
 
 
 
-mapa_atual =  createPlane(3);
+mapa_atual =  createPlane(1);
 render();
 
 function tanksController(){
@@ -253,15 +269,6 @@ function checkRestart(){
       scene.remove(scene.children[0]);
     }
     mapa_atual = createPlane(mapa_atual);
-    
-  }
-  if (assettank1.colisoes < 1){
-    if (assettank2.colisoes < 1){
-      while (scene.children.length > 0) {
-        scene.remove(scene.children[0]);
-      }
-      mapa_atual = createPlane(mapa_atual);
-    }
   }
 }
 function checkProjectileCollisions() {
@@ -354,9 +361,16 @@ function updateAsset() {
   stageController();
   updateTankAssets();
   updateProjectile();
+  updateGates();
   controllerCanhaoCental();
 
 }
+
+function updateGates() {
+  gates.forEach((gate) => {
+    gate.bb.setFromObject(gate.object)
+    //console.log(projectile.bb);
+  })};
 
 function updateProjectile() {
   projectiles.forEach((projectile) => {
@@ -484,8 +498,36 @@ function checkWallCollisions(cubes) {
           scene.remove(projectile.bb);
         }
       }
-    });
-  });
+    })});
+    (gates || []).forEach((wallmov) => {
+      collisionP1 = assetPlayer.bb.intersectsBox(wallmov.bb);
+      collisionP2 = assettank1.bb.intersectsBox(wallmov.bb);
+      collisionP3 = assettank2.bb.intersectsBox(wallmov.bb);
+      if (collisionP1) {
+        checkColisionSideTank(assetPlayer, wallmov);
+        infoBox.changeMessage("Collision detected Player");
+      }
+      if (collisionP2) {
+        checkColisionSideTank(assettank1, wallmov);
+        infoBox.changeMessage("Collision detected tank1");
+      }
+  
+      if (collisionP3) {
+        checkColisionSideTank(assettank2, wallmov);
+        infoBox.changeMessage("Collision detected tank2");
+      }
+  
+      projectiles.forEach((projectile) => {
+        if (projectile.bb.intersectsBox(wallmov.bb)) {
+          colisao(projectile, wallmov);
+  
+          if (projectile.colisoes >= 3) {
+            projectiles.splice(projectiles.indexOf(projectile), 1);
+            scene.remove(projectile);
+            scene.remove(projectile.bb);
+          }
+        }
+      })})
 }
 
 function getTankDirection(tank) {
@@ -749,10 +791,10 @@ function createPlane(nivel) {
           -i - 0.5 + stageMatrix.length / 2,
           0.49,
         );
-        cubes.push({
+        gates.push({
           object: cube,
           bb: new THREE.Box3().setFromObject(cube),
-        });
+        })
         scene.add(cube);
         //aux = aux+1
       }
@@ -1288,71 +1330,101 @@ function createPlane(nivel) {
 }
 
 function gateMovement(gate,up){
-  if (stageLevel == 2){
-    
+
     if (up){
-      if (gate.object.position.y < 1)
-        gate.object.position.y += 0.01
+      if (gate.object.position.z < 0.5)
+        gate.object.position.z += 0.01
     }
     if (!up){
-      if (gate.object.position.y < -1.5){
-        gate.object.position.y -= 0.01
+      if (gate.object.position.z > -1.5){
+        gate.object.position.z -= 0.01
       }
     }
-  }
-
 }
 
 function stageController(){
   if( assetPlayer.object != null){
 
     if (stageLevel == 1){
+      //codigo para ativar IA dos tanques da fase 1
+      //chaseObject(assettank1,assetPlayer);
       if (assettank1.colisoes < 1){
-          stageLevel = 2
-  
-          //codigo pros portoes abrirem
-  
+        console.log(" next stage ")
+        stageLevel = 2
       }
-    }
-    if(assetPlayer.object.position.x > -13.5){
-      stageLevel = 3
-  
-      // codigo para fechar portoes fase 1 e abrir portoes da fase 2
     }
     if (stageLevel == 2){
-      if (assetPlayer.position.x > -9.5) {
+      //codigo pros portoes da fase 1 abrir
+      gateMovement(gates[0],false)
+      if(assetPlayer.object.position.x > -13.5){
+        gates[0].object.position.z = -1
+        console.log(" next stage ")
         stageLevel = 3
-  
-        //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
-  
-      }
+      }      
     }
     if (stageLevel == 3){
-      if (assettank2.colisoes < 1){
-        if(assettank3.colisoes < 1){
-          stageLevel = 4
-          //codigo para abrir portoes da fase 2 para a 3
-        }
+      gateMovement(gates[0],true)
+      gateMovement(gates[1],false)
+      // codigo para fechar portoes fase 1 e abrir portoes da fase 2
+      if (assetPlayer.object.position.x > -9.5) {
+        stageLevel = 4
+        gates[1].object.position.z = -1
+        console.log(" next stage ")
+        scene.children.forEach((child) => {
+          if (child.isDirectionalLight) {
+            child.intensity = 0.5; 
+          }
+        });
+        
       }
     }
     if (stageLevel == 4){
-      if (assetPlayer.position.x > 7.3){
-        stageLevel = 5
-        //codigo para abrir portoes da fase 3
-  
+      //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
+      gateMovement(gates[1],true)
+//      tanklogic(assettank2)
+
+      if (assettank2.colisoes < 1){
+        if(assettank3.colisoes < 1){
+          stageLevel = 5
+          console.log(" next stage ")
+          
+        }
       }
     }
     if (stageLevel == 5){
-      if(assetPlayer.object.position.x > 11.5)
-      stageLevel = 6
-      
+      //codigo para abrir portoes da fase 2 para a 3
+      gateMovement(gates[2],false)
+      if (assetPlayer.object.position.x > 7.3){
+        gates[2].object.position.z = -1
+        stageLevel = 6
+        console.log(" next stage ")
+        
+      }
     }
     if (stageLevel == 6){
+      
+      gateMovement(gates[2],true)
+      gateMovement(gates[3],false)
+      //codigo para abrir portoes da fase 3 e fechar fase 2
+      if(assetPlayer.object.position.x > 11.5)
+        gates[3].object.position.z = -1
+      stageLevel = 7
+      console.log(" next stage ")
+      
+    }
+
+    if (stageLevel == 7){
+      gateMovement(gates[3],true)
+
+      //codigo para ativar IA de tanques da fase 3
+    //  chaseObject(assettank4,assetPlayer);
+    //  chaseObject(assettank5,assetPlayer);
+    //  chaseObject(assettank6,assetPlayer);
+
       if (assettank4.colisoes < 1){
         if(assettank5.colisoes < 1){
           if(assettank6.colisoes < 1){
-            
-            //codigo para colocar a tela de vitoria
+           //mostra tela de vitoria 
           }
         }
       }

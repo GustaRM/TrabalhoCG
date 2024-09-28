@@ -6,7 +6,7 @@ function updateObject(object) {
 }
 
 function getTankDirection(tank) {
-   console.log(tank)
+   //console.log(tank)
    const direction = tank.getWorldDirection(new THREE.Vector3());
    const xDirection = direction.x;
    const yDirection = direction.y;
@@ -78,11 +78,11 @@ export function checkColisionSideTank(tank, wall)
 {
    const tankdirection = getTankDirection(tank.object);
    tankdirection.multiplyScalar(0.15);
-   console.log(tankdirection)
+   //console.log(tankdirection)
    var BoxAux = new THREE.Box3();
    BoxAux.copy(tank.bb);
-   console.log(BoxAux)
-   console.log(tank)
+   //console.log(BoxAux)
+   //console.log(tank)
    BoxAux.max.y = (tank.bb.max.y+tankdirection.y)
    BoxAux.min.y = (tank.bb.min.y+tankdirection.y)
    if (BoxAux.intersectsBox(wall.bb)) // colidiu no sentido Y do tiro
@@ -92,17 +92,17 @@ export function checkColisionSideTank(tank, wall)
       BoxAux.min.y = (tank.bb.min.y-tankdirection.y)
       if (BoxAux.intersectsBox(wall.bb)) // colidiu no contrario sentido Y do tiro
       {
-         console.log("duplaY")
+      //   console.log("duplaY")
       }
       else 
       {
-         console.log("simplesY")
+      //   console.log("simplesY")
          tank.object.position.y = tank.object.position.y - tankdirection.y;
       }
    }
    else
    {
-      console.log("não sei")
+      //console.log("não sei")
       tank.object.position.y = tank.object.position.y + tankdirection.y
    }
    BoxAux.copy(tank.bb);
@@ -125,7 +125,7 @@ export function checkColisionSideTank(tank, wall)
    }
    else
    {
-      console.log("não sei")
+      //console.log("não sei")
       tank.object.position.x += tankdirection.x;
    }
 }
