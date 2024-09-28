@@ -41,7 +41,81 @@ orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
 
+let gameWon = false;
+const victoryScreen = document.getElementById('victoryScreen');
+const resetButton = document.getElementById('resetButton');
 
+let gameStarted = false;
+const startScreen = document.getElementById('startScreen');
+const startButton = document.getElementById('startButton');
+
+startButton.addEventListener('click', startGame);
+
+function startGame() {
+  gameStarted = true;
+  startScreen.style.display = 'none';
+  audioMode = true
+  // Any other initialization you need to do when the game starts
+}
+
+resetButton.addEventListener('click', resetGame);
+
+function resetGame() {
+  gameWon = false;
+  victoryScreen.style.display = 'none';
+  createPlane(nivel)
+}
+/*
+document.addEventListener('DOMContentLoaded', () => {
+  const thumbstick = document.getElementById('thumbstick');
+  const thumbstickKnob = document.getElementById('thumbstickKnob');
+  const shootButton = document.getElementById('shootButton');
+  const volumeButton = document.getElementById('volumeButton');
+
+  let isDragging = false;
+
+  thumbstick.addEventListener('touchstart', (e) => {
+    isDragging = true;
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+      const touch = e.touches[0];
+      const rect = thumbstick.getBoundingClientRect();
+      let x = touch.clientX - rect.left - thumbstickKnob.offsetWidth / 2;
+      let y = touch.clientY - rect.top - thumbstickKnob.offsetHeight / 2;
+
+      // Limit the knob movement to within the thumbstick
+      const maxDistance = (thumbstick.offsetWidth - thumbstickKnob.offsetWidth) / 2;
+      const distance = Math.sqrt(x * x + y * y);
+      if (distance > maxDistance) {
+        x *= maxDistance / distance;
+        y *= maxDistance / distance;
+      }
+
+      thumbstickKnob.style.left = `${x + thumbstick.offsetWidth / 2 - thumbstickKnob.offsetWidth / 2}px`;
+      thumbstickKnob.style.top = `${y + thumbstick.offsetHeight / 2 - thumbstickKnob.offsetHeight / 2}px`;
+
+      assetPlayer.object.position.x = x+player.position.x;
+      assetPlayer.object.position.y = y+player.position.y;
+    }
+  });
+
+  document.addEventListener('touchend', () => {
+    isDragging = false;
+    thumbstickKnob.style.left = '30px';
+    thumbstickKnob.style.top = '30px';
+  });
+
+  shootButton.addEventListener('touchstart', () => {
+    // Implement shooting logic
+  });
+
+  volumeButton.addEventListener('touchstart', () => {
+    // Implement volume adjustment logic
+  });
+});
+*/
 //direção luz poste
 const targetPoste1 = new THREE.Object3D()
 targetPoste1.position.set(-9,4,-3)
@@ -146,7 +220,7 @@ let gates = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
 var godMode = false
-var audioMode = true
+var audioMode = false
 
 let assetPlayer = {
   object: null,
@@ -200,34 +274,35 @@ const C = 98
 mapa_atual =  createPlane(1);
 render();
 
-function tanksController(){
-
-}
 
 function render() {
-  infoBox.changeMessage("No collision detected");
-
-  //função pra fazer o jogo só funcionar depois dos tanques serem carregados
-  updateProjectiles(projectiles, 1);
-  if (
-    assetPlayer.object != null &&
-    assettank1.object != null &&
-    assettank2.object != null &&
-    assettank3.object != null &&
-    assettank4.object != null &&
-    assettank5.object != null &&
-    assettank6.object != null 
-  ) {
-    //assettank1.object.rotateX(0.01);
-    updateAsset();
-    checkWallCollisions(cubes, projectiles);
-    checkProjectileCollisions();
-    tanksController();
+  if (!gameStarted || gameWon) {
+    requestAnimationFrame(render);
+    return;
   }
-  keyboardUpdate(); //Movimenta os players
-  requestAnimationFrame(render);
-  checkRestart()
-  renderer.render(scene, camera);
+
+    infoBox.changeMessage("No collision detected");
+  
+    //função pra fazer o jogo só funcionar depois dos tanques serem carregados
+    updateProjectiles(projectiles, 1);
+    if (
+      assetPlayer.object != null &&
+      assettank1.object != null &&
+      assettank2.object != null &&
+      assettank3.object != null &&
+      assettank4.object != null &&
+      assettank5.object != null &&
+      assettank6.object != null 
+    ) {
+      //assettank1.object.rotateX(0.01);
+      updateAsset();
+      checkWallCollisions(cubes, projectiles);
+      checkProjectileCollisions();
+    }
+    keyboardUpdate(); //Movimenta os players
+    requestAnimationFrame(render);
+    checkRestart()
+    renderer.render(scene, camera);
 }
 function updateProjectiles(projectiles) {
   projectiles.forEach((projectile) => {
@@ -1571,8 +1646,8 @@ function stageController(){
       if (assettank4.colisoes < 1){
         if(assettank5.colisoes < 1){
           if(assettank6.colisoes < 1){
-            console.log(" voce ganhou ")
-           //mostra tela de vitoria 
+            gameWon = true;
+            victoryScreen.style.display = 'flex';
           }
         }
       }
