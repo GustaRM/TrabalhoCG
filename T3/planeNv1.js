@@ -1507,6 +1507,7 @@ function stageController(){
         {
           gates[1].object.position.z = 0.49
         }
+        assetPlayer.colisoes = 10
         console.log(" next stage ")
         scene.children.forEach((child) => {
           if (child.isDirectionalLight) {
@@ -1546,6 +1547,7 @@ function stageController(){
       if (assetPlayer.object.position.x > 7.3){
         gates[2].object.position.z = -0.5
         stageLevel = 6
+        assetPlayer.colisoes = 10
         console.log(" next stage ")
         scene.children.forEach((child) => {
           if (child.isDirectionalLight) {
