@@ -822,6 +822,7 @@ function createPlane(nivel) {
   const stageMatrix = stageSelector(nivel);
   movingwalls = []
   cubes = []
+  gates = []
   assetPlayer.colisoes = 10
   assettank1.colisoes = 10
   assettank2.colisoes = 10
