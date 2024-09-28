@@ -1500,8 +1500,8 @@ function stageController(){
     if (stageLevel == 4){
       //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
       gateMovement(gates[1],true)
-      chaseObject(assettank2,assetPlayer);
-      chaseObject(assettank3,assetPlayer);
+      chaseObject(assettank2,assetPlayer, 0.05, 5);
+      chaseObject(assettank3,assetPlayer, 0.05, 6);
 //      tanklogic(assettank2)
       if( Date.now() - UltimoTiro > 3000)
       {
@@ -1553,9 +1553,9 @@ function stageController(){
       gateMovement(gates[3],true)
 
       //codigo para ativar IA de tanques da fase 3
-      chaseObject(assettank4,assetPlayer);
-      chaseObject(assettank5,assetPlayer);
-      chaseObject(assettank6,assetPlayer);
+      chaseObject(assettank4,assetPlayer, 0.05, 4);
+      chaseObject(assettank5,assetPlayer, 0.05, 5);
+      chaseObject(assettank6,assetPlayer, 0.05, 6);
       movingWallsController()
       if( Date.now() - UltimoTiro > 3000)
       {
