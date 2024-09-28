@@ -179,13 +179,6 @@ let assettank6 = {
   bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
 };
 
-
-let assettank7 = {
-  object: null,
-  colisoes: 10,
-  bb: new THREE.Box3(new THREE.Vector3(), new THREE.Vector3()),
-};
-
 const P = 99
 const C = 98
 
@@ -242,7 +235,11 @@ function render() {
   if (
     assetPlayer.object != null &&
     assettank1.object != null &&
-    assettank2.object != null
+    assettank2.object != null &&
+    assettank3.object != null &&
+    assettank4.object != null &&
+    assettank5.object != null &&
+    assettank6.object != null 
   ) {
     //assettank1.object.rotateX(0.01);
     updateAsset();
@@ -334,6 +331,43 @@ function checkProjectileCollisions() {
       projectile.remove;
     }
 
+    for (let i = 3; i <= 6; i++) {
+      let tank = eval(`assettank${i}`);
+      if (tank.bb.intersectsBox(projectile.bb)) {
+        projectiles.splice(projectiles.indexOf(projectile), 1);
+        delete projectile[index];
+        scene.remove(projectile.bb);
+        scene.remove(projectile);
+        if (audioMode == true )
+        {
+          soundExplosion.stop();
+          soundExplosion.setVolume(0.05);
+          soundExplosion.play();
+        }
+        tank.colisoes -= 1;
+ 
+      }
+    }
+    if(assettank3.colisoes == 0)
+      {
+        scene.remove(assettank3.bb);
+        scene.remove(assettank3.object)
+      }
+    if(assettank4.colisoes == 0)
+    {
+      scene.remove(assettank4.bb);
+      scene.remove(assettank4.object)
+    }
+    if(assettank5.colisoes == 0)
+    {
+      scene.remove(assettank5.bb);
+      scene.remove(assettank5.object)
+    }
+    if(assettank6.colisoes == 0)
+    {
+      scene.remove(assettank6.bb);
+      scene.remove(assettank6.object)
+    }
     /*if (projectile.bb.intersectsBox(assettank2.bb)) {
       projectiles.splice(projectiles.indexOf(projectile), 1);
       delete projectile[index]
@@ -427,6 +461,25 @@ function updateProjectile() {
       {
         assettank2.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
       }
+      for (let i = 3; i <= 6; i++) {
+        let tank = eval(`assettank${i}`);
+        if (tank.colisoes > 0) {
+          tank.bb.copy(tank.object.position);
+          tank.bb.setFromObject(tank.object);
+        
+          if (tank.object.children.length == 1)
+            lifeBar(tank.colisoes, tank.object)
+          if (tank.colisoes != tank.object.children[1].geometry.parameters.width)
+          {
+            tank.object.remove(tank.object.children[1])
+            lifeBar(tank.colisoes, tank.object)
+          }  
+        }
+        else
+        {
+          tank.bb = new THREE.Box3(new THREE.Vector3(300,300,300))
+        }
+      }
   }
 function lifeBar(vida,objeto)
 {
@@ -439,11 +492,15 @@ function lifeBar(vida,objeto)
 
 
 function checkWallCollisions(cubes) {
-  let collisionP1, collisionP2, collisionP3;
+  let collisionP1, collisionP2, collisionP3, collisionP4, collisionP5, collisionP6, collisionP7;
   (cubes || []).forEach((wall) => {
     collisionP1 = assetPlayer.bb.intersectsBox(wall.bb);
     collisionP2 = assettank1.bb.intersectsBox(wall.bb);
     collisionP3 = assettank2.bb.intersectsBox(wall.bb);
+    collisionP4 = assettank3.bb.intersectsBox(wall.bb);
+    collisionP5 = assettank4.bb.intersectsBox(wall.bb);
+    collisionP6 = assettank5.bb.intersectsBox(wall.bb);
+    collisionP7 = assettank6.bb.intersectsBox(wall.bb);
     if (collisionP1) {
       checkColisionSideTank(assetPlayer, wall);
       infoBox.changeMessage("Collision detected Player");
@@ -455,6 +512,22 @@ function checkWallCollisions(cubes) {
 
     if (collisionP3) {
       checkColisionSideTank(assettank2, wall);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP4) {
+      checkColisionSideTank(assettank3, wall);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP5) {
+      checkColisionSideTank(assettank4, wall);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP6) {
+      checkColisionSideTank(assettank5, wall);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP7) {
+      checkColisionSideTank(assettank6, wall);
       infoBox.changeMessage("Collision detected tank2");
     }
 
@@ -474,6 +547,10 @@ function checkWallCollisions(cubes) {
     collisionP1 = assetPlayer.bb.intersectsBox(wallmov.bb);
     collisionP2 = assettank1.bb.intersectsBox(wallmov.bb);
     collisionP3 = assettank2.bb.intersectsBox(wallmov.bb);
+    collisionP4 = assettank3.bb.intersectsBox(wallmov.bb);
+    collisionP5 = assettank4.bb.intersectsBox(wallmov.bb);
+    collisionP6 = assettank5.bb.intersectsBox(wallmov.bb);
+    collisionP7 = assettank6.bb.intersectsBox(wallmov.bb);
     if (collisionP1) {
       checkColisionSideTank(assetPlayer, wallmov);
       infoBox.changeMessage("Collision detected Player");
@@ -485,6 +562,22 @@ function checkWallCollisions(cubes) {
 
     if (collisionP3) {
       checkColisionSideTank(assettank2, wallmov);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP4) {
+      checkColisionSideTank(assettank3, wallmov);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP5) {
+      checkColisionSideTank(assettank4, wallmov);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP6) {
+      checkColisionSideTank(assettank5, wallmov);
+      infoBox.changeMessage("Collision detected tank2");
+    }
+    if (collisionP7) {
+      checkColisionSideTank(assettank6, wallmov);
       infoBox.changeMessage("Collision detected tank2");
     }
 
@@ -503,6 +596,10 @@ function checkWallCollisions(cubes) {
       collisionP1 = assetPlayer.bb.intersectsBox(wallmov.bb);
       collisionP2 = assettank1.bb.intersectsBox(wallmov.bb);
       collisionP3 = assettank2.bb.intersectsBox(wallmov.bb);
+      collisionP4 = assettank3.bb.intersectsBox(wallmov.bb);
+      collisionP5 = assettank4.bb.intersectsBox(wallmov.bb);
+      collisionP6 = assettank5.bb.intersectsBox(wallmov.bb);
+      collisionP7 = assettank6.bb.intersectsBox(wallmov.bb);
       if (collisionP1) {
         checkColisionSideTank(assetPlayer, wallmov);
         infoBox.changeMessage("Collision detected Player");
@@ -511,9 +608,24 @@ function checkWallCollisions(cubes) {
         checkColisionSideTank(assettank1, wallmov);
         infoBox.changeMessage("Collision detected tank1");
       }
-  
       if (collisionP3) {
         checkColisionSideTank(assettank2, wallmov);
+        infoBox.changeMessage("Collision detected tank2");
+      }
+      if (collisionP4) {
+        checkColisionSideTank(assettank3, wallmov);
+        infoBox.changeMessage("Collision detected tank2");
+      }
+      if (collisionP5) {
+        checkColisionSideTank(assettank4, wallmov);
+        infoBox.changeMessage("Collision detected tank2");
+      }
+      if (collisionP6) {
+        checkColisionSideTank(assettank5, wallmov);
+        infoBox.changeMessage("Collision detected tank2");
+      }
+      if (collisionP7) {
+        checkColisionSideTank(assettank6, wallmov);
         infoBox.changeMessage("Collision detected tank2");
       }
   
@@ -704,7 +816,7 @@ function createPlane(nivel) {
     stageLevel = 3;
   }
   if (nivel == 3) {
-    stageLevel = 5;
+    stageLevel = 6;
   }
 
   const stageMatrix = stageSelector(nivel);
@@ -1219,16 +1331,6 @@ function createPlane(nivel) {
           -i - 0.5 + stageMatrix.length / 2,
           tank1Material,
         );
-      }if (stageMatrix[i][j] === 98) {
-        loadGLBFile(
-          scene,
-          assettank7,
-          "../assets/objects/toontanktrab2.glb",
-          1.5,
-          j + 0.5 - stageMatrix[i].length / 2,
-          -i - 0.5 + stageMatrix.length / 2,
-          tank1Material,
-        );
       }
       if (stageMatrix[i][j] === 30) {
         let cube = buildCanhao();
@@ -1372,7 +1474,7 @@ function stageController(){
         console.log(" next stage ")
         scene.children.forEach((child) => {
           if (child.isDirectionalLight) {
-            child.intensity = 0.5; 
+            child.intensity = 0.2; 
           }
         });
         
@@ -1398,6 +1500,11 @@ function stageController(){
         gates[2].object.position.z = -1
         stageLevel = 6
         console.log(" next stage ")
+        scene.children.forEach((child) => {
+          if (child.isDirectionalLight) {
+            child.intensity = 1.0; 
+          }
+        })
         
       }
     }
@@ -1406,10 +1513,11 @@ function stageController(){
       gateMovement(gates[2],true)
       gateMovement(gates[3],false)
       //codigo para abrir portoes da fase 3 e fechar fase 2
-      if(assetPlayer.object.position.x > 11.5)
+      if(assetPlayer.object.position.x > 11.5){
         gates[3].object.position.z = -1
-      stageLevel = 7
-      console.log(" next stage ")
+        stageLevel = 7
+        console.log(" next stage ")
+      }
       
     }
 
@@ -1424,6 +1532,7 @@ function stageController(){
       if (assettank4.colisoes < 1){
         if(assettank5.colisoes < 1){
           if(assettank6.colisoes < 1){
+            console.log(" voce ganhou ")
            //mostra tela de vitoria 
           }
         }
