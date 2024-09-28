@@ -858,7 +858,10 @@ function createPlane(nivel) {
   const plane = new THREE.Mesh(geometry, cubeText);
   plane.receiveShadow = true;
   scene.add(plane);
+  const skyTexture = new THREE.TextureLoader().load( 'texturas/Skybox2.jpg' );
+  skyTexture.mapping = THREE.EquirectangularReflectionMapping;
 
+  scene.background = skyTexture;
  
   //========= Adiciona elementos na cena(tanques, paredes, poste) ============
 
