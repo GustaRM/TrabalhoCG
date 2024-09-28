@@ -56,7 +56,7 @@ targetPoste4.position.set(-2,-1,-10)
 
 
 //chase logic 
-function chaseObject(chaser, target, speed = 0.05, distance = 4) {
+function chaseObject(chaser, target, speed = 0.05, distance = 5) {
   // Calculate direction vector
   const distancebetween = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
   const direction = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
@@ -1500,6 +1500,8 @@ function stageController(){
     if (stageLevel == 4){
       //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
       gateMovement(gates[1],true)
+      chaseObject(assettank2,assetPlayer);
+      chaseObject(assettank3,assetPlayer);
 //      tanklogic(assettank2)
       if( Date.now() - UltimoTiro > 3000)
       {
