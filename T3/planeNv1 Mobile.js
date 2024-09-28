@@ -63,7 +63,7 @@ resetButton.addEventListener('click', resetGame);
 function resetGame() {
   gameWon = false;
   victoryScreen.style.display = 'none';
-  createPlane(nivel)
+  createPlane(mapa_atual)
 }
 /*
 document.addEventListener('DOMContentLoaded', () => {
@@ -210,9 +210,7 @@ const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
 const tank2Material = new THREE.MeshPhongMaterial({ color: "red" });
 const tank3Material = new THREE.MeshPhongMaterial({ color: "yellow" });
 const level2WallsMaterial = new THREE.MeshLambertMaterial({color: "green"})
-const level3WallsMaterial = new THREE.MeshLambertMaterial({color: "blue"})
-const levelConectorMaterial = new THREE.MeshLambertMaterial({color: "red"})
-const sliderMaterial = new THREE.MeshLambertMaterial({color: "yellow"})
+
 let cubes = [];
 let projectiles = [];
 let movingwalls = [];

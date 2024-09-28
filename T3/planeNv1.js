@@ -54,6 +54,7 @@ startButton.addEventListener('click', startGame);
 function startGame() {
   gameStarted = true;
   startScreen.style.display = 'none';
+  audioMode = true
   // Any other initialization you need to do when the game starts
 }
 
@@ -62,7 +63,7 @@ resetButton.addEventListener('click', resetGame);
 function resetGame() {
   gameWon = false;
   victoryScreen.style.display = 'none';
-  createPlane(nivel)
+  createPlane(mapa_atual)
 }
 
 //direção luz poste
@@ -169,7 +170,7 @@ let gates = [];
 var infoBox = new SecondaryBox("");
 var auxCanhaoCentral;
 var godMode = false
-var audioMode = true
+var audioMode = false
 
 let assetPlayer = {
   object: null,
@@ -263,9 +264,6 @@ function updateProjectiles(projectiles) {
 function checkRestart(){
   //console.log (assettank1)
   if(assetPlayer.colisoes == 0){
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
     mapa_atual = createPlane(mapa_atual);
   }
 }
@@ -733,26 +731,17 @@ function keyboardUpdate() {
   }
   //Altera mapa para nivel 1
   if (keyboard.down("1")) {
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
+
     
     mapa_atual = createPlane(1);
   }
 
    //Altera mapa para nivel 2
   if (keyboard.down("2")) {
-    scene.remove(scene);
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
+
     mapa_atual = createPlane(2);
   }
   if (keyboard.down("3")) {
-    scene.remove(scene);
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
     mapa_atual = createPlane(3);
   }
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
@@ -809,6 +798,7 @@ function calcDistancia(asset1, asset2) {
 //Função para iniciar o nível
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
+  gameWon = false
 
   if (nivel == 1) {
     stageLevel = 1;
@@ -819,7 +809,9 @@ function createPlane(nivel) {
   if (nivel == 3) {
     stageLevel = 7;
   }
-
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
   const stageMatrix = stageSelector(nivel);
   movingwalls = []
   cubes = []
