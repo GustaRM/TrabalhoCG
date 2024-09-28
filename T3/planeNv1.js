@@ -122,6 +122,7 @@ let mapa_atual ;
 const playerMaterial = new THREE.MeshPhongMaterial({ color: "green" });
 const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
 const tank2Material = new THREE.MeshPhongMaterial({ color: "red" });
+const tank3Material = new THREE.MeshPhongMaterial({ color: "yellow" });
 const level2WallsMaterial = new THREE.MeshLambertMaterial({color: "green"})
 const level3WallsMaterial = new THREE.MeshLambertMaterial({color: "blue"})
 const levelConectorMaterial = new THREE.MeshLambertMaterial({color: "red"})
@@ -188,21 +189,7 @@ mapa_atual =  createPlane(1);
 render();
 
 function tanksController(){
-  if(stageLevel == 1)
-  {
-    assettank1.object.rotateZ(0.01);
-    assettank2.object.rotateZ(0.01);
-  }
-  else if (stageLevel == 3)
-  {
-  //  assettank3.object.rotateZ(0.01);
-  //  assettank4.object.rotateZ(0.01);
-  }
-  else if (stageLevel == 4) {
-  //  assettank5.object.rotateZ(0.01);
-  //  assettank6.object.rotateZ(0.01);
-  //  assettank7.object.rotateZ(0.01);
-  }
+
 }
 
 function render() {
@@ -1298,7 +1285,7 @@ function createPlane(nivel) {
           1.5,
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
-          tank1Material,
+          tank2Material,
         );
       }if (stageMatrix[i][j] === 97) {
         loadGLBFile(
@@ -1308,7 +1295,7 @@ function createPlane(nivel) {
           1.5,
           j + 0.5 - stageMatrix[i].length / 2,
           -i - 0.5 + stageMatrix.length / 2,
-          tank1Material,
+          tank3Material,
         );
       }
       if (stageMatrix[i][j] === 30) {
@@ -1433,6 +1420,24 @@ function shootTank(assettank){
   }
 }
 
+function movingWallsController(){
+  movingwalls.forEach(wall => {
+    if(wall.tipo == 1){
+      wall.object.position.y += 0.01
+      if(wall.object.position.y > 2.0){
+      wall.tipo = 2
+      }
+    }
+    if(wall.tipo == 2){
+      wall.object.position.y -= 0.01
+      if(wall.object.position.y < -2.0){
+        wall.tipo = 1
+      }
+    }
+    wall.bb.setFromObject(wall.object)
+  });
+}
+
 function stageController(){
   if( assetPlayer.object != null){
 
@@ -1536,7 +1541,7 @@ function stageController(){
       chaseObject(assettank4,assetPlayer);
       chaseObject(assettank5,assetPlayer);
       chaseObject(assettank6,assetPlayer);
-
+      movingWallsController()
       if( Date.now() - UltimoTiro > 3000)
       {
         shootTank(assettank4)
