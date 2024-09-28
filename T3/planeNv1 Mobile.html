@@ -4,7 +4,23 @@
     <title>Plane Tank 3D</title>
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../html/resources/default.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
+    <meta name="orientation" content="landscape">
+    <style>
+        @media screen and (orientation: portrait) {
+            html {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                height: 100vw;
+                overflow-x: hidden;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -13,6 +29,15 @@
   <script type="importmap"> 
     {"imports": {"three": "../build/three.module.js"}} 
   </script> 
+  <div id="startScreen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Arial, sans-serif;">
+    <h1>Plane Tanks 3D de Comp Grafica</h1>
+    <button id="startButton" style="padding: 10px 20px; font-size: 18px; cursor: pointer;">Start Game</button>
+  </div>
+
+  <div id="victoryScreen" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: Arial, sans-serif;">
+    <h1>Vitoria!</h1>
+    <button id="resetButton" style="padding: 10px 20px; font-size: 18px; cursor: pointer;">Play Again</button>
+  </div>
 
   <div id="webgl-output">        
     <script type="module" src="planeNv1.js"></script>

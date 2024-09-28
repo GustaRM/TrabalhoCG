@@ -41,6 +41,29 @@ orbit = new OrbitControls(camera, renderer.domElement);
 orbit.enabled = isOrbitEnabled;
 let midpoint = new THREE.Vector3();
 
+let gameWon = false;
+const victoryScreen = document.getElementById('victoryScreen');
+const resetButton = document.getElementById('resetButton');
+
+let gameStarted = false;
+const startScreen = document.getElementById('startScreen');
+const startButton = document.getElementById('startButton');
+
+startButton.addEventListener('click', startGame);
+
+function startGame() {
+  gameStarted = true;
+  startScreen.style.display = 'none';
+  // Any other initialization you need to do when the game starts
+}
+
+resetButton.addEventListener('click', resetGame);
+
+function resetGame() {
+  gameWon = false;
+  victoryScreen.style.display = 'none';
+  createPlane(nivel)
+}
 
 //direção luz poste
 const targetPoste1 = new THREE.Object3D()
@@ -200,34 +223,35 @@ const C = 98
 mapa_atual =  createPlane(1);
 render();
 
-function tanksController(){
-
-}
 
 function render() {
-  infoBox.changeMessage("No collision detected");
-
-  //função pra fazer o jogo só funcionar depois dos tanques serem carregados
-  updateProjectiles(projectiles, 1);
-  if (
-    assetPlayer.object != null &&
-    assettank1.object != null &&
-    assettank2.object != null &&
-    assettank3.object != null &&
-    assettank4.object != null &&
-    assettank5.object != null &&
-    assettank6.object != null 
-  ) {
-    //assettank1.object.rotateX(0.01);
-    updateAsset();
-    checkWallCollisions(cubes, projectiles);
-    checkProjectileCollisions();
-    tanksController();
+  if (!gameStarted || gameWon) {
+    requestAnimationFrame(render);
+    return;
   }
-  keyboardUpdate(); //Movimenta os players
-  requestAnimationFrame(render);
-  checkRestart()
-  renderer.render(scene, camera);
+
+    infoBox.changeMessage("No collision detected");
+  
+    //função pra fazer o jogo só funcionar depois dos tanques serem carregados
+    updateProjectiles(projectiles, 1);
+    if (
+      assetPlayer.object != null &&
+      assettank1.object != null &&
+      assettank2.object != null &&
+      assettank3.object != null &&
+      assettank4.object != null &&
+      assettank5.object != null &&
+      assettank6.object != null 
+    ) {
+      //assettank1.object.rotateX(0.01);
+      updateAsset();
+      checkWallCollisions(cubes, projectiles);
+      checkProjectileCollisions();
+    }
+    keyboardUpdate(); //Movimenta os players
+    requestAnimationFrame(render);
+    checkRestart()
+    renderer.render(scene, camera);
 }
 function updateProjectiles(projectiles) {
   projectiles.forEach((projectile) => {
@@ -1571,8 +1595,8 @@ function stageController(){
       if (assettank4.colisoes < 1){
         if(assettank5.colisoes < 1){
           if(assettank6.colisoes < 1){
-            console.log(" voce ganhou ")
-           //mostra tela de vitoria 
+            gameWon = true;
+            victoryScreen.style.display = 'flex';
           }
         }
       }
