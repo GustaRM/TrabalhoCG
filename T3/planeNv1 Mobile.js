@@ -18,6 +18,8 @@ import { Color, DirectionalLight, MeshLambertMaterial, Vector3 } from "../build/
 import { createTank, loadGLBFile, buildCanhao, buildPoste } from "./createTank.js";
 import { checkColisionSideTank, colisao } from "./colision.js";
 //import {buildPoste , buildCanhao} from "./PosteCanhaoCSG.js";
+let powerUps = [];
+let powerUpTimer = Date.now();
 let UltimoTiro = Date.now();
 let stageLevel = 1;
 let scene,
@@ -229,6 +231,7 @@ let assetPlayer = {
   object: null,
   colisoes: 10,
   bb: new THREE.Box3(),
+  damage: 1,
 };
 
 let assettank1 = {
@@ -449,7 +452,31 @@ function updateAsset() {
   updateProjectile();
   updateGates();
   controllerCanhaoCental();
+  powerUpController();
+  checkPowerUpCollisions();
+}
 
+//Frunção que controla powerups
+function powerUpController()
+{
+  
+}
+
+function checkPowerUpCollisions() {
+  powerUps.forEach((powerUp, index) => {
+    if (assetPlayer.bb.intersectsBox(new THREE.Box3().setFromObject(powerUp))) {
+      // Player picked up the power-up
+      scene.remove(powerUp);
+      powerUps.splice(index, 1);
+      
+      if (powerUp.userData.type === 'doubleDamage') {
+        playerDamageMultiplier = 2;
+        setTimeout(() => {
+          playerDamageMultiplier = 1;
+        }, powerUp.userData.duration);
+      }
+    }
+  });
 }
 
 function updateGates() {
@@ -709,6 +736,23 @@ function controllerCanhaoCental()
   
 }
 
+function spawnPowerUp() {
+  const geometry = new THREE.SphereGeometry(0.3, 32, 32);
+  const material = new THREE.MeshPhongMaterial({ color: 0xffff00 }); 
+  const powerUp = new THREE.Mesh(geometry, material);
+
+  powerUp.position.set(
+    Math.random() * (29*2) - 29, 
+    Math.random() * 8 - 4,
+    0.5
+  );
+
+  powerUp.userData.type = 'doubleDamage';
+  powerUp.userData.duration = 10000; // 10 seconds duration
+
+  scene.add(powerUp);
+  powerUps.push(powerUp);
+}
 
 //Funções para movimentar e atirar
 function keyboardUpdate() {
@@ -775,7 +819,8 @@ function keyboardUpdate() {
   
   //Atira tanque 1
   if (keyboard.down("space")){
-    projectiles.push(shoot(assetPlayer.object, 0.15, scene));
+
+    projectiles.push(shoot(assetPlayer.object, 0.15, scene,assetPlayer.damage));
     if (audioMode == true )
     {
       soundShoot.stop()
@@ -876,7 +921,7 @@ function createPlane(nivel) {
   //adicionar iluminação aqui
   scene.add(dirLight);
   scene.add(AmbientLight);
-
+  setInterval(spawnPowerUp, 15000);
 
   //Cria um plano branco do tamanho da matriz
   const geometry = new THREE.PlaneGeometry(
@@ -1524,7 +1569,9 @@ function movingWallsController(){
 
 function stageController(){
   if( assetPlayer.object != null){
-
+    if(powerUps.length < 1000){
+      spawnPowerUp();
+    }
     if (stageLevel == 1){
       //codigo para ativar IA dos tanques da fase 1
       chaseObject(assettank1,assetPlayer);

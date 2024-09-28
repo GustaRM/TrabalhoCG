@@ -7,7 +7,7 @@ function createBBHelper(bb, color, scene) {
   return helper;
 }
 
-export function shoot(tank, speed, scene) {
+export function shoot(tank, speed, scene, damage=1) {
   const projectileGeometry = new THREE.SphereGeometry(0.15, 4, 4);
   const projectileMaterial = new THREE.MeshPhongMaterial({ color: 0xff1493 });
 
@@ -28,6 +28,7 @@ export function shoot(tank, speed, scene) {
   projectile.velocity = projectileDirection.multiplyScalar(speed);
   projectile.colisoes = 0;
   projectile.castShadow = true;
+  projectile.damage = damage;
   scene.add(projectile);
   return projectile;
 }
