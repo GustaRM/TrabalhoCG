@@ -51,21 +51,6 @@ const startButton = document.getElementById('startButton');
 
 startButton.addEventListener('click', startGame);
 
-function startGame() {
-  gameStarted = true;
-  startScreen.style.display = 'none';
-  audioMode = true
-  // Any other initialization you need to do when the game starts
-}
-
-resetButton.addEventListener('click', resetGame);
-
-function resetGame() {
-  gameWon = false;
-  victoryScreen.style.display = 'none';
-  createPlane(mapa_atual)
-}
-/*
 document.addEventListener('DOMContentLoaded', () => {
   const thumbstick = document.getElementById('thumbstick');
   const thumbstickKnob = document.getElementById('thumbstickKnob');
@@ -96,8 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
       thumbstickKnob.style.left = `${x + thumbstick.offsetWidth / 2 - thumbstickKnob.offsetWidth / 2}px`;
       thumbstickKnob.style.top = `${y + thumbstick.offsetHeight / 2 - thumbstickKnob.offsetHeight / 2}px`;
 
-      assetPlayer.object.position.x = x+player.position.x;
-      assetPlayer.object.position.y = y+player.position.y;
+      assetPlayer.object.position.x = assetPlayer.object.position.x + x * moveSpeed
+      assetPlayer.object.position.y = assetPlayer.object.position.y + y * moveSpeed
+      assetPlayer.object.lookAt(assetPlayer.object.position.x, assetPlayer.object.position.y, 0);
     }
   });
 
@@ -108,14 +94,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   shootButton.addEventListener('touchstart', () => {
-    // Implement shooting logic
+    shoot(assetPlayer, 10, scene);
   });
 
   volumeButton.addEventListener('touchstart', () => {
-    // Implement volume adjustment logic
+    volumeMode = !volumeMode
   });
 });
-*/
+
+
+
+function startGame() {
+  gameStarted = true;
+  startScreen.style.display = 'none';
+  audioMode = true
+  // Any other initialization you need to do when the game starts
+}
+
+resetButton.addEventListener('click', resetGame);
+
+function resetGame() {
+  gameWon = false;
+  victoryScreen.style.display = 'none';
+  createPlane(mapa_atual)
+}
+
 //direção luz poste
 const targetPoste1 = new THREE.Object3D()
 targetPoste1.position.set(-9,4,-3)
@@ -210,7 +213,9 @@ const tank1Material = new THREE.MeshPhongMaterial({ color: "blue" });
 const tank2Material = new THREE.MeshPhongMaterial({ color: "red" });
 const tank3Material = new THREE.MeshPhongMaterial({ color: "yellow" });
 const level2WallsMaterial = new THREE.MeshLambertMaterial({color: "green"})
-
+const level3WallsMaterial = new THREE.MeshLambertMaterial({color: "blue"})
+const levelConectorMaterial = new THREE.MeshLambertMaterial({color: "red"})
+const sliderMaterial = new THREE.MeshLambertMaterial({color: "yellow"})
 let cubes = [];
 let projectiles = [];
 let movingwalls = [];
@@ -312,9 +317,6 @@ function updateProjectiles(projectiles) {
 function checkRestart(){
   //console.log (assettank1)
   if(assetPlayer.colisoes == 0){
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
     mapa_atual = createPlane(mapa_atual);
   }
 }
@@ -782,26 +784,17 @@ function keyboardUpdate() {
   }
   //Altera mapa para nivel 1
   if (keyboard.down("1")) {
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
+
     
     mapa_atual = createPlane(1);
   }
 
    //Altera mapa para nivel 2
   if (keyboard.down("2")) {
-    scene.remove(scene);
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
+
     mapa_atual = createPlane(2);
   }
   if (keyboard.down("3")) {
-    scene.remove(scene);
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
     mapa_atual = createPlane(3);
   }
   //Destrava camera (ao ser acionado novamente volta a camera para a posição anterior)
@@ -858,6 +851,7 @@ function calcDistancia(asset1, asset2) {
 //Função para iniciar o nível
 function createPlane(nivel) {
   //Cria o plano que ficarão os tanques
+  gameWon = false
 
   if (nivel == 1) {
     stageLevel = 1;
@@ -868,7 +862,9 @@ function createPlane(nivel) {
   if (nivel == 3) {
     stageLevel = 7;
   }
-
+    while (scene.children.length > 0) {
+      scene.remove(scene.children[0]);
+    }
   const stageMatrix = stageSelector(nivel);
   movingwalls = []
   cubes = []
