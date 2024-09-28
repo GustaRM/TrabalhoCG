@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let x = touch.clientX - rect.left - thumbstickKnob.offsetWidth / 2;
       let y = touch.clientY - rect.top - thumbstickKnob.offsetHeight / 2;
 
-      // Limit the knob movement to within the thumbstick
+      // Limita o movimento
       const maxDistance = (thumbstick.offsetWidth - thumbstickKnob.offsetWidth) / 2;
       const distance = Math.sqrt(x * x + y * y);
       if (distance > maxDistance) {
@@ -110,7 +110,6 @@ function startGame() {
   gameStarted = true;
   startScreen.style.display = 'none';
   audioMode = true
-  // Any other initialization you need to do when the game starts
 }
 
 resetButton.addEventListener('click', resetGame);
@@ -136,11 +135,11 @@ targetPoste4.position.set(-2,-1,-10)
 
 //chase logic 
 function chaseObject(chaser, target, speed = 0.05, distance = 5) {
-  // Calculate direction vector
+
   const distancebetween = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
   const direction = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
   direction.normalize();
-  // Normalize the direction vector (convert to unit vector)
+
   if (distancebetween.length() > distance){
 
     chaser.object.position.add(direction.multiplyScalar(speed));
@@ -149,9 +148,7 @@ function chaseObject(chaser, target, speed = 0.05, distance = 5) {
 
     chaser.object.position.add(direction.multiplyScalar(-speed));
   }
-  // Move the chaser in the direction of the target
-  
-  // Optional: Make the chaser look at the target
+
   chaser.object.lookAt(target.object.position);
   if (chaser.object.position.x > target.object.position.x){
     chaser.object.rotateZ(-Math.PI/2)
@@ -423,22 +420,6 @@ function checkProjectileCollisions() {
       scene.remove(assettank6.bb);
       scene.remove(assettank6.object)
     }
-    /*if (projectile.bb.intersectsBox(assettank2.bb)) {
-      projectiles.splice(projectiles.indexOf(projectile), 1);
-      delete projectile[index]
-      scene.remove(projectile.bb);
-      scene.remove(projectile);
-      assettank2.colisoes = -1;
-
-      if(assettank2.colisoes == 0)
-      {
-          scene.remove(assettank2.bb);
-          scene.remove(assettank2.object)
-      }
-      console.log("sucesso")
-      projectile.remove;
-    }
-    */
   });
 }
 
@@ -937,30 +918,27 @@ function createPlane(nivel) {
     side: THREE.DoubleSide,
   });
 
-  // Create a directional light
+  // Criando a luz direcional
   const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // Color and intensity
 
-  // Set the position of the light
+   //Alterção das configs da luz
   directionalLight.position.set(-15, 17, 20); // x, y, z coordinates
-
-  // Optionally, you can also set the direction of the light
-  directionalLight.target.position.set(0, 0, 0); // Where the light should point
+  directionalLight.target.position.set(0, 0, 0);
   directionalLight.castShadow = true; 
-  directionalLight.shadow.camera.left = -140;  // Extend left boundary
-  directionalLight.shadow.camera.right = 140;  // Extend right boundary
-  directionalLight.shadow.camera.top = 140;    // Extend top boundary
-  directionalLight.shadow.camera.bottom = -140; // Extend bottom boundary
-  directionalLight.shadow.mapSize.width = 8192; // Default is 512
+  directionalLight.shadow.camera.left = -140;
+  directionalLight.shadow.camera.right = 140;  
+  directionalLight.shadow.camera.top = 140;    
+  directionalLight.shadow.camera.bottom = -140; 
+  directionalLight.shadow.mapSize.width = 8192; 
   directionalLight.shadow.mapSize.height = 8192;
 
-  // Optional: Adjust near and far planes of the shadow camera
+
   directionalLight.shadow.camera.near = 0.5;
   directionalLight.shadow.camera.far = 60;
 
-  // Add the light to the scene
   scene.add(directionalLight);
 
-  // Optionally, add the target object to the scene (if you want to control the direction)
+  
   scene.add(directionalLight.target);
 
   const texture = new THREE.TextureLoader().load( 'texturas/floorWood.jpg' );
@@ -1003,7 +981,6 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         })
         scene.add(cube);
-        //aux = aux+1
       }
       if (stageMatrix[i][j] === 7 || stageMatrix[i][j] === 6) {
         var cubeGeometry = new THREE.BoxGeometry(1, 3, 1);
@@ -1035,7 +1012,6 @@ function createPlane(nivel) {
           });
         }
         scene.add(cube);
-        //aux = aux+1
       }
 
       if (stageMatrix[i][j] === 1) {
@@ -1058,7 +1034,6 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
 
       if (stageMatrix[i][j] === 11) {
@@ -1081,7 +1056,6 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
 
       if (stageMatrix[i][j] === 14) {
@@ -1104,7 +1078,6 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
 
       //stage 2 Walls
@@ -1332,25 +1305,8 @@ function createPlane(nivel) {
           bb: new THREE.Box3().setFromObject(cube),
         });
         scene.add(cube);
-        //aux = aux+1
       }
-      /*
-      if (stageMatrix[i][j] === 15) {
-        var cubeGeometry = new THREE.BoxGeometry(1, 6, 1);
-        let cube = new THREE.Mesh(cubeGeometry, level1WallsMaterial);
-        cube.position.set(
-          j + 0.5 - stageMatrix[i].length / 2,
-          -i - 0.5 + stageMatrix.length / 2,
-          0.49,
-        );
-        cubes.push({
-          object: cube,
-          bb: new THREE.Box3().setFromObject(cube),
-        });
-        scene.add(cube);
-        //aux = aux+1
-      }
-      */
+
       // Coloca o tanque 1 no plano
       if (stageMatrix[i][j] === 90) {
         loadGLBFile(
@@ -1438,7 +1394,6 @@ function createPlane(nivel) {
         cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
         auxCanhaoCentral = cube;
-        //aux = aux+1
       }
       if (stageMatrix[i][j] === 26) {
         let cube = buildPoste();
@@ -1447,17 +1402,13 @@ function createPlane(nivel) {
           -i - 0.25 + stageMatrix.length / 2,
           0,
         );
-        //ok
+
         scene.add(targetPoste1)
         cube.children[0].target = targetPoste1
-        //console.log(cube.children[0].target)
-        //cube.children[0].target(targ)
-        //console.log(cube)
         cube.rotateZ(THREE.MathUtils.degToRad(-125))
         cube.scale.set(0.7,0.7,0.7)
         cube.castShadow = true;
         scene.add(cube);
-        //aux = aux+1
       }
       if (stageMatrix[i][j] === 27) {
         let cube = buildPoste();
@@ -1469,7 +1420,6 @@ function createPlane(nivel) {
         cube.castShadow = true;
         scene.add(targetPoste4)
         cube.children[0].target = targetPoste4
-        //console.log(cube.children[0].target)
         cube.scale.set(0.7,0.7,0.7)
         
         scene.add(cube);
@@ -1483,7 +1433,6 @@ function createPlane(nivel) {
         );
         scene.add(targetPoste2)
         cube.children[0].target = targetPoste2
-        //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(45))
         cube.scale.set(0.7,0.7,0.7)
         cube.castShadow = true;
@@ -1497,10 +1446,8 @@ function createPlane(nivel) {
           0,
         );
 
-        //ok
         scene.add(targetPoste3)
         cube.children[0].target = targetPoste3
-        //console.log(cube.children[0].target)
         cube.rotateZ(THREE.MathUtils.degToRad(180))
         cube.scale.set(0.7,0.7,0.7)
         scene.add(cube);
@@ -1539,6 +1486,7 @@ function gateMovement(gate,up){
     }
 }
 
+//Função para atirar
 function shootTank(assettank){
   if (assettank.colisoes > 0){
     projectiles.push(shoot(assettank.object, 0.15, scene));
@@ -1549,6 +1497,7 @@ function shootTank(assettank){
   }
 }
 
+//Movimentação das paredes
 function movingWallsController(){
   movingwalls.forEach(wall => {
     if(wall.tipo == 1){
