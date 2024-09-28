@@ -62,12 +62,12 @@ function chaseObject(chaser, target, speed = 0.05, distance) {
   
   // Normalize the direction vector (convert to unit vector)
   direction.normalize();
-  
   // Move the chaser in the direction of the target
   chaser.object.position.add(direction.multiplyScalar(speed));
   
   // Optional: Make the chaser look at the target
   chaser.object.lookAt(target.object.position);
+  chaser.object.rotateZ(-Math.PI/2)
 }
 
 // Audios =============================================
@@ -202,28 +202,6 @@ function tanksController(){
   //  assettank5.object.rotateZ(0.01);
   //  assettank6.object.rotateZ(0.01);
   //  assettank7.object.rotateZ(0.01);
-  }
-  if( Date.now() - UltimoTiro > 3000)
-  {
-    
-
-    if (assettank1.colisoes > 0){
-      projectiles.push(shoot(assettank1.object, 0.15, scene));
-      if (audioMode == true){
-        soundShoot.stop()
-        soundShoot.play()
-       
-      }
-    }
-    if (assettank2.colisoes > 0){
-    projectiles.push(shoot(assettank2.object, 0.15, scene));
-    if (audioMode == true){
-      soundShoot.stop()
-      soundShoot.play()
-      
-    }
-    }
-    UltimoTiro = Date.now();
   }
 }
 
@@ -816,7 +794,7 @@ function createPlane(nivel) {
     stageLevel = 3;
   }
   if (nivel == 3) {
-    stageLevel = 6;
+    stageLevel = 7;
   }
 
   const stageMatrix = stageSelector(nivel);
@@ -1445,11 +1423,27 @@ function gateMovement(gate,up){
     }
 }
 
+function shootTank(assettank){
+  if (assettank.colisoes > 0){
+    projectiles.push(shoot(assettank.object, 0.15, scene));
+    if (audioMode == true){
+      soundShoot.stop()
+      soundShoot.play()
+    }
+  }
+}
+
 function stageController(){
   if( assetPlayer.object != null){
 
     if (stageLevel == 1){
       //codigo para ativar IA dos tanques da fase 1
+      if( Date.now() - UltimoTiro > 3000)
+      {
+        shootTank(assettank1)
+        UltimoTiro = Date.now()
+      }
+
       //chaseObject(assettank1,assetPlayer);
       if (assettank1.colisoes < 1){
         console.log(" next stage ")
@@ -1460,7 +1454,7 @@ function stageController(){
       //codigo pros portoes da fase 1 abrir
       gateMovement(gates[0],false)
       if(assetPlayer.object.position.x > -13.5){
-        gates[0].object.position.z = -1
+        gates[0].object.position.z = -0.5
         console.log(" next stage ")
         stageLevel = 3
       }      
@@ -1471,7 +1465,11 @@ function stageController(){
       // codigo para fechar portoes fase 1 e abrir portoes da fase 2
       if (assetPlayer.object.position.x > -9.5) {
         stageLevel = 4
-        gates[1].object.position.z = -1
+        gates[1].object.position.z = -0.5
+        if(mapa_atual == 2)
+        {
+          gates[1].object.position.z = 0.49
+        }
         console.log(" next stage ")
         scene.children.forEach((child) => {
           if (child.isDirectionalLight) {
@@ -1485,6 +1483,15 @@ function stageController(){
       //codigo para fechar portoes fase 2 e ativar ia dos tanques da fase 2
       gateMovement(gates[1],true)
 //      tanklogic(assettank2)
+      if( Date.now() - UltimoTiro > 3000)
+      {
+        shootTank(assettank2)
+        shootTank(assettank3)
+        UltimoTiro = Date.now()
+      }
+
+
+
 
       if (assettank2.colisoes < 1){
         if(assettank3.colisoes < 1){
@@ -1498,7 +1505,7 @@ function stageController(){
       //codigo para abrir portoes da fase 2 para a 3
       gateMovement(gates[2],false)
       if (assetPlayer.object.position.x > 7.3){
-        gates[2].object.position.z = -1
+        gates[2].object.position.z = -0.5
         stageLevel = 6
         console.log(" next stage ")
         scene.children.forEach((child) => {
@@ -1515,7 +1522,7 @@ function stageController(){
       gateMovement(gates[3],false)
       //codigo para abrir portoes da fase 3 e fechar fase 2
       if(assetPlayer.object.position.x > 11.5){
-        gates[3].object.position.z = -1
+        gates[3].object.position.z = -0.5
         stageLevel = 7
         console.log(" next stage ")
       }
@@ -1526,9 +1533,17 @@ function stageController(){
       gateMovement(gates[3],true)
 
       //codigo para ativar IA de tanques da fase 3
-    //  chaseObject(assettank4,assetPlayer);
-    //  chaseObject(assettank5,assetPlayer);
-    //  chaseObject(assettank6,assetPlayer);
+      chaseObject(assettank4,assetPlayer);
+      chaseObject(assettank5,assetPlayer);
+      chaseObject(assettank6,assetPlayer);
+
+      if( Date.now() - UltimoTiro > 3000)
+      {
+        shootTank(assettank4)
+        shootTank(assettank5)
+        shootTank(assettank6)
+        UltimoTiro = Date.now()
+      }
 
       if (assettank4.colisoes < 1){
         if(assettank5.colisoes < 1){
