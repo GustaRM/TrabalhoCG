@@ -1103,7 +1103,7 @@ function createPlane(nivel) {
       }
       */
       // Coloca o tanque 1 no plano
-      if (stageMatrix[i][j] === 97) {
+      if (stageMatrix[i][j] === 90) {
         loadGLBFile(
           scene,
           assetPlayer,
