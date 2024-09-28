@@ -56,18 +56,30 @@ targetPoste4.position.set(-2,-1,-10)
 
 
 //chase logic 
-function chaseObject(chaser, target, speed = 0.05, distance) {
+function chaseObject(chaser, target, speed = 0.05, distance = 4) {
   // Calculate direction vector
+  const distancebetween = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
   const direction = new THREE.Vector3().subVectors(target.object.position, chaser.object.position);
-  
-  // Normalize the direction vector (convert to unit vector)
   direction.normalize();
+  // Normalize the direction vector (convert to unit vector)
+  if (distancebetween.length() > distance){
+
+    chaser.object.position.add(direction.multiplyScalar(speed));
+  }
+  if (distancebetween.length() < distance-0.1){
+
+    chaser.object.position.add(direction.multiplyScalar(-speed));
+  }
   // Move the chaser in the direction of the target
-  chaser.object.position.add(direction.multiplyScalar(speed));
   
   // Optional: Make the chaser look at the target
   chaser.object.lookAt(target.object.position);
-  chaser.object.rotateZ(-Math.PI/2)
+  if (chaser.object.position.x > target.object.position.x){
+    chaser.object.rotateZ(-Math.PI/2)
+  }
+  else{
+    chaser.object.rotateZ(Math.PI/2)
+  }
 }
 
 // Audios =============================================
@@ -79,7 +91,7 @@ const audioLoader = new THREE.AudioLoader();
 audioLoader.load( 'sons/imperial.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
-	sound.setVolume( 0.01 );
+	sound.setVolume( 0.02 );
   sound.play();
 });
 
@@ -1443,6 +1455,7 @@ function stageController(){
 
     if (stageLevel == 1){
       //codigo para ativar IA dos tanques da fase 1
+      chaseObject(assettank1,assetPlayer);
       if( Date.now() - UltimoTiro > 3000)
       {
         shootTank(assettank1)
