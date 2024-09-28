@@ -76,6 +76,7 @@ const audioLoaderShoot = new THREE.AudioLoader();
 audioLoaderShoot.load( 'sons/tankshot.mp3', function( buffer ) {
   soundShoot.setBuffer( buffer );
   soundShoot.setVolume( 0.03 );
+  soundShoot.detune -= 1000
 });
 
 const listenerExplosion = new THREE.AudioListener();
