@@ -4,4 +4,5 @@ Files for the Computer Graphics course in Three.js
 
 ## Github Pages
 
-[Link](https://aaronr01.github.io/TrabalhoCG/T1/planeNv1.html)
+[Link Desktop](https://gustarm.github.io/TrabalhoCG/T3/planeNv1.html)
+[Link Mobile](https://gustarm.github.io/TrabalhoCG/T3/planeNv1%20Mobile.html)
